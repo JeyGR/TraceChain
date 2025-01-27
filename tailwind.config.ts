@@ -11,6 +11,8 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        'custom-bronze':"#A18072",
+        'custom-bronze-bg':"#EDE0D9",
       },
     },
   },
