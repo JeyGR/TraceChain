@@ -1,12 +1,4 @@
 "use client";
-import {
-  Box,
-  Button,
-  Card,
-  Theme,
-  ThemeContext,
-  ThemePanel,
-} from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import { Montserrat } from "next/font/google";
 import React, { useState } from "react";
@@ -75,9 +67,10 @@ const Home = () => {
                   No products found!
                 </div>
               ) : (
-                <div></div>
+                <div>
+                  {/* product catalog goes here */}
+                </div>
               )}
-              {/* product catalog goes here */}
             </div>
           </div>
         </div>

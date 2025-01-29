@@ -19,7 +19,7 @@ const montserrat = Montserrat({ subsets: ["latin"] });
 const SignInForm = () => {
   const [showpassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
-    useState<Boolean>(false);
+    useState<boolean>(false);
   const [name, setName] = useState<string>();
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
