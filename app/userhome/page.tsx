@@ -55,12 +55,12 @@ const page = () => {
 
   return (
     <div
-      className={`max-w-screen w-full min-h-screen bg-indigo-50 flex justify-between items-center ${montserrat.className}`}
+      className={`max-w-screen w-full min-h-screen bg-gray-100 flex justify-between items-center ${montserrat.className}`}
     >
-      <div className="md:w-1/4 h-screen bg-indigo-100 p-5 border-r-2 border-r-indigo-200 hidden md:flex flex-col items-center gap-7">
+      <div className="md:w-1/4 h-screen bg-gray-200 p-5 border-r border-gray-300 hidden md:flex flex-col items-center gap-7">
         <h1 className="text-bold text-2xl font-extrabold text-neutral-700">How to use</h1>
         <div className="w-full flex flex-col gap-1 overflow-auto">
-        <div className="w-full bg-indigo-200 bg-opacity-30 rounded-lg flex flex-col gap-5 px-1 md:px-3 py-2 border-2 border-opacity-10 border-indigo-800 border-dashed overflow-auto scrollbar-custom">
+        <div className="w-full bg-white bg bg-opacity-45 rounded-lg flex flex-col gap-5 px-1 md:px-3 py-2 border-2 border-indigo-300 border-dashed overflow-auto scrollbar-custom">
             {productDetails.map((item, key)=>(
             <h1 className="font-bold text-neutral-700" key={key}>
                 {item.Name} - <span className="font-medium">{item.Value}</span>
@@ -71,7 +71,7 @@ const page = () => {
       </div>
       <div className='md:w-3/4 w-full min-h-screen flex flex-col p-5 items-center justify-center'>
             <div className=' p-5 rounded-lg flex flex-col gap-5 items-center'>
-            <button className='px-6 py-2 bg-blue-600 rounded text-xl font-semibold flex items-center gap-3 hover:bg-blue-800'><EnterFullScreenIcon className='w-6 h-6'/>Scan a product</button>
+            <button className='px-6 py-2 bg-indigo-600 rounded text-xl font-semibold flex items-center gap-3 hover:bg-indigo-800'><EnterFullScreenIcon className='w-6 h-6'/>Scan a product</button>
             </div>
       </div>
     </div>
