@@ -10,8 +10,8 @@ interface DataStorageStore {
   isLoading: boolean;
   error: string | null;
   initializeWeb3: () => Promise<void>;
-  addOrUpdateData: (id: number, hashString: string) => Promise<void>;
-  fetchData: (id: number) => Promise<string | null>;
+  addOrUpdateData: (id: string, hashString: string) => Promise<void>;
+  fetchData: (id: string) => Promise<string | null>;
 }
 
 export const useDataStorageStore = create<DataStorageStore>((set, get) => ({
@@ -26,12 +26,12 @@ export const useDataStorageStore = create<DataStorageStore>((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const web3 = new Web3(Web3.givenProvider || "http://127.0.0.1:7545");
-      const accounts = await web3.eth.requestAccounts();
       const contractAddress = "0xe4cE70Dd3A5Ad376C5a6BC75F1d18d9c22FD7539";
       const contract = new web3.eth.Contract(
         DataStorageABI.abi,
         contractAddress
       );
+      const accounts = await web3.eth.getAccounts();
 
       set({ web3, contract, account: accounts[0], isLoading: false });
       console.log("Web3 initialized successfully");
@@ -42,19 +42,21 @@ export const useDataStorageStore = create<DataStorageStore>((set, get) => ({
   },
 
   // Add or update data in the contract
-  addOrUpdateData: async (id: number, hashString: string) => {
+  addOrUpdateData: async (id: string, hashString: string) => {
     const { web3, contract, account } = get();
     if (!web3 || !contract || !account) {
       console.error("Web3 or contract is not initialized");
       set({ error: "Web3 or contract is not initialized" });
       return;
     }
+    const gasLimit = 3000000;
 
     set({ isLoading: true, error: null });
     try {
       await contract.methods
         .addOrUpdateData(id, hashString)
-        .send({ from: account });
+        .send({ from: account, gas: gasLimit });
+
       console.log("Data added/updated successfully");
       set({ isLoading: false });
     } catch (error) {
@@ -64,7 +66,7 @@ export const useDataStorageStore = create<DataStorageStore>((set, get) => ({
   },
 
   // Fetch data from the contract
-  fetchData: async (id: number): Promise<string | null> => {
+  fetchData: async (id: string): Promise<string | null> => {
     const { contract } = get();
     if (!contract) {
       console.error("Contract is not initialized");
