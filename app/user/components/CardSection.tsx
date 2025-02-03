@@ -48,7 +48,7 @@ const QUICKDATA = [
 
 const CardSection = () => {
   return (
-    <div className="w-full  h-screen -z-30">
+    <div className="w-full  -z-30">
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5 px-5">
         {QUICKDATA?.map((data, index) => {
           return (
