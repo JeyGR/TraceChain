@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
 import UserFeedback from "../components/UserFeedback";
 import Image from "next/image";
 
@@ -37,8 +36,6 @@ const UniqueProductPage = ({
 
   return (
     <div className="h-screen w-full bg-white text-black">
-      <Navbar />
-      {/* {id && <div className="">{id}</div>} */}
       <div className="flex">
         <div className="flex-1 bg-gray-300 w-full h-screen overflow-y-auto">
           <div className="relative">
