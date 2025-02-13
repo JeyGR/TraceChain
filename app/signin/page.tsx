@@ -12,19 +12,48 @@ import {
   IconButton,
 } from "@radix-ui/themes";
 import { EyeOpenIcon, EyeClosedIcon } from "@radix-ui/react-icons";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
+import { useRouter } from 'next/navigation';
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 const SignInForm = () => {
   const [showpassword, setShowPassword] = useState<boolean>(false);
-  const [email, setEmail] = useState<string>();
-  const [password, setPassword] = useState<string>();
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [isSubitting, setIsSubmitting] = useState<boolean>(false);
+  const router = useRouter();
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-
-    // setIsSubmitting(false);
+    const toastId = toast.loading("Signing in...")
+    try {
+      if(email==="" || password === ""){
+        toast.error("Must fill all fields!", {id:toastId});
+        return;
+      }
+      const response = await axios.post("/api/signin", {email: email, password:password})
+      if(response.data.msg==="success"){
+        const offToken = response.data.token;
+        console.log(offToken);
+        localStorage.setItem("offToken", offToken);
+        localStorage.removeItem("Token");
+        toast.success("Signed In", {id:toastId});
+        router.push("/home");
+        return;
+      }
+      else{
+        toast.error(response.data.msg, {id:toastId});
+        return;
+      }
+    } catch (error) {
+      console.log("Error in Officer login : ", error);
+      toast.error("Something went wrong", {id:toastId})
+    }
+    finally{
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -81,7 +110,7 @@ const SignInForm = () => {
               >
                 SignIn
               </Button>
-              <div className="w-full flex justify-center cursor-pointer">
+              <div className="w-full flex justify-center cursor-pointer" onClick={()=> router.push("/signup")}>
                 <Text
                   color="blue"
                   className={`${montserrat.className} text-sm `}
@@ -93,6 +122,7 @@ const SignInForm = () => {
           </div>
         </div>
       </div>
+      <Toaster/>
     </Theme>
   );
 };

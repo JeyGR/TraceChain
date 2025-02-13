@@ -6,13 +6,15 @@ import {
   Button,
   Flex,
   Theme,
-  ThemePanel,
   Box,
   TextField,
   Text,
   IconButton,
 } from "@radix-ui/themes";
 import { EyeOpenIcon, EyeClosedIcon } from "@radix-ui/react-icons";
+import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -20,17 +22,57 @@ const SignInForm = () => {
   const [showpassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
-  const [name, setName] = useState<string>();
-  const [email, setEmail] = useState<string>();
-  const [password, setPassword] = useState<string>();
-  const [confirmPass, setConfirmPass] = useState<string>();
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPass, setConfirmPass] = useState<string>("");
   const [isSubitting, setIsSubmitting] = useState<boolean>(false);
-
+  const router = useRouter();
+  
   const handleSubmit = async () => {
     setIsSubmitting(true);
+  
+    if (name === "" || email === "" || password === "" || confirmPass === "") {
+      toast.error("Must fill all fields!");
+      setIsSubmitting(false);
+      return;
+    }
+  
+    if (password !== confirmPass) {
+      toast.error("Passwords do not match");
+      setIsSubmitting(false);
+      return;
+    }
+  
+    try {
+      const response = await axios.post('/api/usersignup', {
+        name,
+        email,
+        password,
+      });
+  
+      const { token, user } = response.data;
+  
+      localStorage.setItem('token', token);
+  
+      toast.success("Sign up successful!");
+  
+      router.push('/userhome'); 
 
-    // setIsSubmitting(false);
+      setName('');
+      setEmail('');
+      setPassword('');
+      setConfirmPass('');
+  
+    } catch (error) {
+
+      toast.error("Signup failed. Please try again.");
+    }
+    finally{
+      setIsSubmitting(false);
+    }
   };
+  
 
   return (
     <Theme appearance="light" grayColor="slate" panelBackground="solid">
@@ -122,7 +164,7 @@ const SignInForm = () => {
               >
                 SignUp
               </Button>
-              <div className="w-full flex justify-center cursor-pointer">
+              <div className="w-full flex justify-center cursor-pointer" onClick={()=>router.push("/usersignin")}>
                 <Text
                   color="indigo"
                   className={`${montserrat.className} text-sm `}
@@ -134,6 +176,7 @@ const SignInForm = () => {
           </div>
         </div>
       </div>
+      <Toaster/>
     </Theme>
   );
 };

@@ -1,11 +1,20 @@
 "use client";
 import "@radix-ui/themes/styles.css";
-import { Montserrat } from "next/font/google";
-import { EnterFullScreenIcon } from "@radix-ui/react-icons";
+import { Montserrat } from 'next/font/google'
+import React, { useEffect } from 'react'
+import {EnterFullScreenIcon,} from '@radix-ui/react-icons';
+import { useRouter } from "next/navigation";
+
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 const page = () => {
+  const router = useRouter();
+  useEffect(()=>{
+    if( !localStorage.getItem("token")){
+        router.replace("/");
+    }
+  },[])
   const productDetails = [
     {
       Name: "Product name",

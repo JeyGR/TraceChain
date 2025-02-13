@@ -1,31 +1,57 @@
 "use client";
 import "@radix-ui/themes/styles.css";
 import { Montserrat } from "next/font/google";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PlusIcon } from "@radix-ui/react-icons";
 import { EnterFullScreenIcon } from "@radix-ui/react-icons";
 import AddProduct from "@/components/AddProduct";
 import AddStep from "@/components/AddStep";
+import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 const Home = () => {
-  // const [name, setName] = useState("Hey this is name");
-  // const [email, setEmail] = useState("Hey this is Email");
-  // const [desig, setDesig] = useState("Hey this is Designation");
   const [products, setProducts] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isStepModal, setIsStepModal] = useState(false);
-
   const [authorityDetails, setAuthorityDetails] = useState<{
     name: string;
     email: string;
     desig: string;
   }>({
-    name: "Hey This is name",
-    email: "Hey this is Email",
-    desig: "Hey this is Designation",
+    name: "",
+    email: "",
+    desig: "",
   });
+  const router = useRouter();
+
+  useEffect(()=>{
+    const receiveData = async ()=>{
+      try {
+        const response = await axios.get("/api/getoffdetails", {headers:{token: localStorage.getItem("offToken")}});
+        if(response.data.msg==="success"){
+          console.log(response.data);
+          const temp = {
+            name: response.data.data.name,
+            email: response.data.data.email,
+            desig : "Something"
+          }
+          setAuthorityDetails(temp);
+        }
+        else if(response.data.msg==="Session expired"){
+          localStorage.removeItem("offToken");
+          router.push("/signin");
+          toast.error(response.data.msg);
+        }
+        return;
+      } catch (error) {
+        toast.error("Something went wrong");
+      }
+    }
+    receiveData();
+  },[])
 
   const handleModalClose = () => {
     setIsOpen(false);
@@ -95,6 +121,7 @@ const Home = () => {
       </div>
       {isOpen && <AddProduct close={handleModalClose} />}
       {isStepModal && <AddStep close={handleStepModalClose} />}
+      <Toaster/>
     </div>
   );
 };
