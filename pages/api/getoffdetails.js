@@ -11,7 +11,7 @@ export default async function hanlder(req,res){
             console.log(req.headers.token);
             
             const decode =jwt.verify(req.headers.token, process.env.JWT_SECRET);
-            
+
             await connectDb();
 
             const officer = await Officer.findOne({uuid:decode.uuid});
@@ -24,7 +24,7 @@ export default async function hanlder(req,res){
             }
         }
     } catch (error) {
-        console.log(error);
-        res.json({msg:"Unexpected error occured"});
+        console.log("error from get offcer details: ", error);
+        res.status(404).json({msg:"Unexpected error occured"});
     }
 }

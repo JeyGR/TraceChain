@@ -9,13 +9,16 @@ import AddStep from "@/components/AddStep";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import ProductScanner from "@/components/ProductScanner";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 const Home = () => {
   const [products, setProducts] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isStepModal, setIsStepModal] = useState(false);
+  const [isAddProductModal, setiIsAddProductModal] = useState(false);
+  const [isScanerModal, setIsScannerModal] = useState<boolean>(false);
+  const [isAddStepModalOpen, setIsAddStepModalOpen] = useState<boolean>(false);
+  const [qrCode,setQRCode] = useState<string>("");
   const [authorityDetails, setAuthorityDetails] = useState<{
     name: string;
     email: string;
@@ -40,26 +43,30 @@ const Home = () => {
           }
           setAuthorityDetails(temp);
         }
-        else if(response.data.msg==="Session expired"){
+        else{
           localStorage.removeItem("offToken");
+          toast.error("Session expired");
           router.push("/signin");
-          toast.error(response.data.msg);
         }
         return;
       } catch (error) {
+        console.log(error);
         toast.error("Something went wrong");
       }
     }
     receiveData();
   },[])
 
-  const handleModalClose = () => {
-    setIsOpen(false);
+  const handleAddProductModalClose = () => {
+    setiIsAddProductModal(false);
   };
 
-  const handleStepModalClose = () => {
-    setIsStepModal(false);
-  };
+  const handleAddStepModalTrigger =(qrCode : string)=>{
+    setQRCode(qrCode);
+    setIsAddStepModalOpen(true);
+  }
+
+
 
   return (
     <div
@@ -93,9 +100,7 @@ const Home = () => {
                   No products found!
                 </div>
               ) : (
-                <div>
-                  {/* product catalog goes here */}
-                </div>
+                <div>{/* product catalog goes here */}</div>
               )}
             </div>
           </div>
@@ -105,23 +110,38 @@ const Home = () => {
         <div className=" p-5 rounded-lg flex flex-col gap-5 items-center">
           <button
             className="px-8 py-1 bg-blue-600 rounded text-xl font-semibold flex items-center gap-3 hover:bg-blue-800"
-            onClick={() => setIsOpen(true)}
+            onClick={() => setiIsAddProductModal(true)}
           >
             <PlusIcon className="w-6 h-6" />
             Add new
           </button>
           <button
             className="px-8 py-1 bg-blue-600 rounded text-xl font-semibold flex items-center gap-3 hover:bg-blue-800"
-            onClick={() => setIsStepModal(true)}
+            onClick={() => setIsScannerModal(true)}
           >
             <EnterFullScreenIcon className="w-6 h-6" />
             Scan
           </button>
         </div>
       </div>
-      {isOpen && <AddProduct close={handleModalClose} />}
-      {isStepModal && <AddStep close={handleStepModalClose} />}
-      <Toaster/>
+      {isAddProductModal && <AddProduct close={handleAddProductModalClose} />}
+      {isScanerModal && (
+        <div>
+          <div
+            onClick={() => setIsScannerModal(false)}
+            className="absolute top-0 left-0 z-[99999] h-screen w-full bg-black opacity-80  text-black"
+          ></div>
+          <div className="absolute top-1/2 w-full md:w-fit left-1/2 -translate-x-1/2 -translate-y-1/2  z-[99999999]">
+            <ProductScanner
+              setIsQrScannerOpen={()=>setIsScannerModal(false)} handleScanned={handleAddStepModalTrigger}
+            />
+          </div>
+        </div>
+      )}
+      <Toaster />
+      {isAddStepModalOpen && (
+        <AddStep close={()=>setIsAddStepModalOpen(false)} productId={qrCode}/>
+      )}
     </div>
   );
 };
