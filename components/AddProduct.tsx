@@ -2,6 +2,7 @@ import { Box, Button, Flex, IconButton, Select, Text, TextField, Theme, ThemePan
 import React, { useRef, useState } from 'react'
 import { Cross1Icon } from '@radix-ui/react-icons';
 import toast, { Toaster } from 'react-hot-toast';
+import axios from 'axios';
 
 interface modalProps {
   close: () => void;
@@ -40,15 +41,30 @@ const AddProduct: React.FC<modalProps> = ({ close }) => {
     }
   };
 
-  const handleSubmit = () => {
-    for(var i=0;i<formData.length;i++){
-      if(formData[i].value===""){
-        toast.error(`${formData[i].title} is not filled`);
-        return;
-      }
+  const handleSubmit = async () => {
+    // for(var i=0;i<formData.length;i++){
+    //   if(formData[i].value===""){
+    //     toast.error(`${formData[i].title} is not filled`);
+    //     return;
+    //   }
+    // }
+    const toastId = toast.loading("Generating QR...");
+
+    // Send to blockchain and get the ProductId and send it to backend
+
+    const tempProductId = "123456789";
+
+    const res = await axios.get(`/api/getqrcode/${tempProductId}`);
+    if(res.data.msg==="success"){
+      const link = document.createElement('a');
+      link.href = res.data.qrCode;
+      link.download =res.data.fileName;
+      link.click();
+      toast.success("QR downloaded", {id:toastId});
     }
-    // Send to backend
-    toast.success("Submitted");
+    else{
+      toast.error(res.data.msg, {id:toastId});
+    }
   };
 
   return (
