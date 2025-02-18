@@ -1,18 +1,30 @@
 "use client";
 import "@radix-ui/themes/styles.css";
 import { Montserrat } from "next/font/google";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChatBubbleIcon } from "@radix-ui/react-icons";
 import AddFeedback from "@/components/AddFeedback";
+import { useParams } from "next/navigation";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 const page = () => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [pid, setPid] = useState<string | string[] | undefined>("");
+  const params = useParams();
 
-  const handleModalClose = () => {
+  useEffect(()=>{
+    setPid(params?.pid);
+  },[])
+  const handleFeedBackModal = () => {
     setIsFeedbackOpen(false);
   };
+  const handleFeedbackSubmit =(content:string)=>{
+    console.log("Nothing");
+    
+  }
+  
+  
 
   const productDetails = [
     { Name: "Product name", Value: "Sample name" },
@@ -150,7 +162,7 @@ const page = () => {
           Add
         </button>
       </div>
-      {isFeedbackOpen && <AddFeedback close={handleModalClose} />}
+      {isFeedbackOpen && <AddFeedback close={handleFeedBackModal} handleAddFeedback={handleFeedbackSubmit} />}
     </div>
   );
 };

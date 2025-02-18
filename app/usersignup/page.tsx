@@ -50,23 +50,28 @@ const SignInForm = () => {
         email,
         password,
       });
+      console.log(response.data);
+      
+      if(response.data.msg==="success"){
+        const { token, user } = response.data;
+    
+        localStorage.setItem('token', token);
+    
+        toast.success("Sign up successful!");
+    
+        router.push('/userhome'); 
   
-      const { token, user } = response.data;
-  
-      localStorage.setItem('token', token);
-  
-      toast.success("Sign up successful!");
-  
-      router.push('/userhome'); 
-
-      setName('');
-      setEmail('');
-      setPassword('');
-      setConfirmPass('');
+        setName('');
+        setEmail('');
+        setPassword('');
+        setConfirmPass('');
+      }
+      else{
+        toast.error(response.data.msg);
+      }
   
     } catch (error) {
-
-      toast.error("Signup failed. Please try again.");
+      toast.error("Unexpected error occured");
     }
     finally{
       setIsSubmitting(false);

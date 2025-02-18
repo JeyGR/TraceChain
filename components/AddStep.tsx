@@ -28,12 +28,10 @@ const AddStep : React.FC<componentProp> = ({close, productId}) => {
 
 
   useEffect(()=>{
-    toast.success(productId);
     //Call backend with product ID to get details
   },[])
 
   const handleAddProduct = ()=>{
-    console.log("Add product");
     setIsCreating(true);
     setSelectingOption(true);
   }
@@ -58,6 +56,7 @@ const AddStep : React.FC<componentProp> = ({close, productId}) => {
     setIsCreating(false);
     setTextTitle("");
     setTextDes("");
+    //call blockchain
   }
 
   return (
@@ -108,7 +107,7 @@ const AddStep : React.FC<componentProp> = ({close, productId}) => {
                 </Select.Content>
               </Select.Root>
               <Button variant="solid" size="3" onClick={handleSelectedType}>
-                Submit
+                Next
               </Button>
             </Flex>
           )}

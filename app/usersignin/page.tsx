@@ -43,7 +43,6 @@ const SignInForm = () => {
       else{
         toast.error(response.data.msg);
       }
-      
     } catch (error) {
       toast.error(error);
       console.log("Error from signin",error);

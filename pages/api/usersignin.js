@@ -17,23 +17,23 @@ export default async function handler(req, res) {
       const user = await User.findOne({ email });
       if (!user) {
         console.log("user not exist");
-        return res.status(400).json({ msg: 'Invalid credentials' });
+        return res.json({ msg: 'Invalid credentials' });
       }
 
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.status(400).json({ msg: 'Invalid credentials' });
+        return res.json({ msg: 'Invalid credentials' });
       }
 
       const token = generateToken(user);
 
-      res.status(200).json({ msg: 'success', user, token });
+      res.json({ msg: 'success', user, token });
 
     } catch (error) {
       console.error('Error during login:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      res.json({ msg: 'Something went wrong' });
     }
   } else {
-    res.status(405).json({ error: 'Method not allowed' });
+    res.sjson({ msg: 'Method not allowed' });
   }
 }

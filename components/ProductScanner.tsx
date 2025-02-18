@@ -37,7 +37,6 @@ const ProductScanner = ({setIsQrScannerOpen, handleScanned} : ProductScannerprop
 
   const handleScanResult = async (scannedResult: string) => {
     setQrcode(scannedResult);
-    console.log(scannedResult);
     scannerRef.current?.stop();
     scannerRef.current?.destroy();
     scannerRef.current = null;

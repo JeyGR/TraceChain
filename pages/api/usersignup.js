@@ -10,14 +10,14 @@ export default async function handler(req, res) {
       console.log(name+" ,"+email+","+password);
 
       if (!name || !email || !password) {
-        return res.status(400).json({ error: 'All fields are required' });
+        return res.json({ msg: 'All fields are required' });
       }
       await connectDb();
 
       const existingUser = await User.findOne({ email });
       
       if (existingUser) {
-        return res.status(400).json({ error: 'Email is already in use' });
+        return res.json({ msg: 'Email is already in use' });
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -33,13 +33,13 @@ export default async function handler(req, res) {
 
       const token = generateToken(user);
 
-      res.status(201).json({ message: 'User created successfully', user, token });
+      res.json({ msg: 'success', user, token });
 
     } catch (error) {
       console.error('Error creating user:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      res.json({ msg: 'Internal server error' });
     }
   } else {
-    res.status(405).json({ error: 'Method not allowed' });
+    res.json({ msg: 'Method not allowed' });
   }
 }

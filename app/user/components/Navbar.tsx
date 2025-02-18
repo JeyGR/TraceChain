@@ -3,6 +3,7 @@
 
 import React, { useState } from "react";
 import { Menu, X, User, QrCode } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const Navbar = ({
   isQrScannerOpen,
@@ -13,10 +14,18 @@ const Navbar = ({
 }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [loggingOut, setIsLoggingOut] = useState<boolean>(false);
+  const router = useRouter();
 
+  const handleLogout = ()=>{
+    localStorage.removeItem("token");
+    router.push("/usersignin");
+  }
   return (
     <nav className="bg-white  z-50 w-full shadow-md py-4 sticky top-0 left-0 px-6 md:px-12 flex justify-between items-center">
-      <div className="text-2xl font-bold text-gray-800">Logo</div>
+      <div className="text-2xl font-bold text-gray-800">
+        {/* Logo goes here */}
+      </div>
 
       <button
         className="md:hidden text-gray-800"
@@ -41,8 +50,8 @@ const Navbar = ({
           </button>
         ) : (
           <div className="flex gap-2">
-            <button className="bg-pink-700 px-3 py-1 text-white rounded-md hover:bg-pink-600 transition-all duration-300 ease-in-out hover:shadow-xl">
-              Login
+            <button className="bg-indigo-500 px-3 py-1 text-white rounded-md hover:bg-indigo-600 transition-all duration-300 ease-in-out hover:shadow-xl disabled:bg-neutral-500" onClick={handleLogout} disabled={loggingOut}>
+              Logout
             </button>
           </div>
         )}

@@ -42,12 +42,12 @@ const AddProduct: React.FC<modalProps> = ({ close }) => {
   };
 
   const handleSubmit = async () => {
-    // for(var i=0;i<formData.length;i++){
-    //   if(formData[i].value===""){
-    //     toast.error(`${formData[i].title} is not filled`);
-    //     return;
-    //   }
-    // }
+    for(var i=0;i<formData.length;i++){
+      if(formData[i].value===""){
+        toast.error(`${formData[i].title} is not filled`);
+        return;
+      }
+    }
     const toastId = toast.loading("Generating QR...");
 
     // Send to blockchain and get the ProductId and send it to backend
