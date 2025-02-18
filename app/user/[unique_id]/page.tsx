@@ -1,28 +1,14 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useEffect, useState } from "react";
 import UserFeedback from "../components/UserFeedback";
 import Image from "next/image";
+import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
+import { useParams } from "next/navigation";
 
-const UniqueProductPage = ({
-  params,
-}: {
-  params: Promise<{ unique_id: string }>;
-}) => {
-  const [id, setId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchParam = async () => {
-      const unwrappedParams = await params;
-      const uniqueId = unwrappedParams.unique_id;
-      if (uniqueId) setId(uniqueId);
-    };
-    fetchParam();
-  }, []);
-
-  const productDetails = [
-    { Name: "Product name", Value: "Sample name" },
+const UniqueProductPage = () => {
+  const [productDetails, setproductDetails] = useState<{Name:string,Value:string}[]>([{ Name: "Product name", Value: "Sample name" },
     { Name: "Product description", Value: "Sample description" },
     { Name: "Maximum retail price", Value: "499" },
     { Name: "Company", Value: "abc pvt ltd" },
@@ -31,12 +17,17 @@ const UniqueProductPage = ({
     { Name: "Contact info", Value: "abc@gmail.com" },
     { Name: "Net weight", Value: "45kg" },
     { Name: "Country of origin", Value: "India" },
-    { Name: "Age restriction", Value: "Only for 16+" },
-  ];
+    { Name: "Age restriction", Value: "Only for 16+" },]);
+    const [pid, setPid] = useState<any>("");
+    const params =useParams();
+  useEffect(()=>{
+    setPid(params?.unique_id);
+  },[])
+
 
   return (
-    <div className="h-screen w-full bg-white text-black">
-      <div className="flex">
+    <div className="max-h-screen w-full bg-white text-black">
+      <div className="flex h-full overflow-y-scroll">
         <div className="flex-1 bg-gray-300 w-full h-screen overflow-y-auto">
           <div className="relative">
             <Image
@@ -48,11 +39,6 @@ const UniqueProductPage = ({
               className="w-full px-4 py-5 rounded-md"
               alt="product imag"
             />
-            <div className=" bg-white absolute top-7 rounded-full left-7 px-3">
-              <p className="text-sm text-pink-700 font-semibold">
-                Product Id: <span className="text-gray-600">#{id}</span>
-              </p>
-            </div>
           </div>
           <div className="h-screen bg-gray-200 p-5 border-r border-gray-300 hidden md:flex flex-col items-center gap-7">
             <h1 className="text-bold text-2xl font-extrabold text-gray-800">
@@ -76,6 +62,7 @@ const UniqueProductPage = ({
           <UserFeedback />
         </div>
       </div>
+      <Toaster/>
     </div>
   );
 };

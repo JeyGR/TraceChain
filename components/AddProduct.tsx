@@ -1,44 +1,72 @@
-"use client";
 import { Box, Button, Flex, IconButton, Select, Text, TextField, Theme, ThemePanel } from '@radix-ui/themes';
 import React, { useRef, useState } from 'react'
-import { Cross1Icon, FaceIcon } from '@radix-ui/react-icons';
+import { Cross1Icon } from '@radix-ui/react-icons';
 import toast, { Toaster } from 'react-hot-toast';
+import axios from 'axios';
 
-interface modalProps{
-  close : ()=>void;
+interface modalProps {
+  close: () => void;
 }
 
-const AddProduct : React.FC<modalProps> = ({close}) => {
+const AddProduct: React.FC<modalProps> = ({ close }) => {
   const [isOpen, setIsOpen] = useState(false);
   const titleRef = useRef<HTMLInputElement>(null);
   const valueRef = useRef<HTMLInputElement>(null);
-  const [selectedType, setSelectedType] = useState("select");
+  const [selectedType, setSelectedType] = useState<string>("select");
+  const [formData, setFormData] = useState<{ title: string; placeholder: string; type: any; value: string }[]>([
+    { title: "Product Name", placeholder: "eg: yoga bar, coke, tropicana", type: "text", value: "" },
+    { title: "Product description", placeholder: "eg: natural energy bar", type: "text", value: "" },
+    { title: "Maximum retail price", placeholder: "eg: ₹499", type: "text", value: "" },
+    { title: "Company", placeholder: "eg: abc pvt. ltd.", type: "text", value: "" },
+    { title: "Contact info", placeholder: "eg: abc.enquiry@gmail.com", type: "text", value: "" },
+    { title: "Net weight", placeholder: "eg: 1.5kg", type: "text", value: "" },
+    { title: "Country of origin", placeholder: "eg: India", type: "text", value: "" },
+    { title: "Age restriction", placeholder: "eg: only for 16+", type: "text", value: "" }
+  ]);
+  
 
-
-  const handleAddProperty =()=>{
-    if(titleRef.current?.value==="" || selectedType==="select" || valueRef.current?.value==""){
+  const handleAddProperty = () => {
+    if (titleRef.current?.value === "" || selectedType === "select" || valueRef.current?.value === "") {
       toast.error("All values must be entered!");
       return;
+    } else {
+      const newProperty = {
+        title: String(titleRef.current?.value),
+        placeholder: String(valueRef.current?.value),
+        value:"",
+        type: selectedType
+      };
+      setFormData([...formData, newProperty]);
+      setIsOpen(false);
     }
-  }
+  };
 
-  interface FormField {
-    title: string;
-    value: string;
-    type: string
-  }
-  
-  const formData: FormField[] = [
-    { title: "Product Name", value: "eg: yoga bar, coke, tropicana", type: "text" },
-    { title: "Product description", value: "eg: natural energy bar", type: "text" },
-    { title: "Maximum retail price", value: "eg: ₹499", type: "text" },
-    { title: "Company", value: "eg: abc pvt. ltd.", type: "text" },
-    { title: "Contact info", value: "eg: abc.enquiry@gmail.com", type: "text" },
-    { title: "Net weight", value: "eg: 1.5kg", type: "text" },
-    { title: "Country of origin", value: "eg: India", type: "text" },
-    { title: "Age restriction", value: "eg: only for 16+", type: "text" }
-  ];
-  
+  const handleSubmit = async () => {
+    for(var i=0;i<formData.length;i++){
+      if(formData[i].value===""){
+        toast.error(`${formData[i].title} is not filled`);
+        return;
+      }
+    }
+    const toastId = toast.loading("Generating QR...");
+
+    // Send to blockchain and get the ProductId and send it to backend
+
+    const tempProductId = "123456789";
+
+    const res = await axios.get(`/api/getqrcode/${tempProductId}`);
+    if(res.data.msg==="success"){
+      const link = document.createElement('a');
+      link.href = res.data.qrCode;
+      link.download =res.data.fileName;
+      link.click();
+      toast.success("QR downloaded", {id:toastId});
+    }
+    else{
+      toast.error(res.data.msg, {id:toastId});
+    }
+  };
+
   return (
     <Theme grayColor="olive" appearance="dark">
       <div className="fixed inset-0 bg-black bg-opacity-70 w-full flex justify-center z-50 p-6 md:py-32 md:px-32">
@@ -50,15 +78,18 @@ const AddProduct : React.FC<modalProps> = ({close}) => {
             <div className="md:px-5 w-full flex flex-col md:grid md:grid-cols-2 gap-4">
               {formData.map((item, key) => (
                 <div className="w-full max-h-fit" key={key}>
-                  <h1 className="font-medium text-base text-neutral-300">
-                    {item.title}
-                  </h1>
+                  <h1 className="font-medium text-base text-neutral-300">{item.title}</h1>
                   <Box minWidth="10rem" className="min-w-full">
                     <TextField.Root
                       size="2"
                       type={item.type}
-                      placeholder={item.value}
+                      placeholder={item.placeholder}
                       required={true}
+                      onChange={(e) => {
+                        const updatedFormData = [...formData];
+                        updatedFormData[key].value = e.target.value;
+                        setFormData(updatedFormData); 
+                      }}
                     />
                   </Box>
                 </div>
@@ -79,7 +110,9 @@ const AddProduct : React.FC<modalProps> = ({close}) => {
                 </Button>
               </div>
               <div>
-                <Button variant="solid">Submit</Button>
+                <Button variant="solid" onClick={handleSubmit}>
+                  Submit
+                </Button>
               </div>
             </div>
           </div>
@@ -93,9 +126,7 @@ const AddProduct : React.FC<modalProps> = ({close}) => {
               <div className="rounded-md flex flex-col gap-4 md:gap-6 bg-neutral-500 border-2 border-neutral-400 border-opacity-30 bg-opacity-35 backdrop-blur-lg p-5 relative md:w-1/3 md:min-h-1/3">
                 <h1 className="font-bold text-xl">Add a property</h1>
                 <div>
-                  <h1 className="font-medium text-neutral-200">
-                    Property title
-                  </h1>
+                  <h1 className="font-medium text-neutral-200">Property title</h1>
                   <TextField.Root placeholder="eg : net weight" size="3" ref={titleRef}>
                     <TextField.Slot></TextField.Slot>
                   </TextField.Root>
@@ -145,6 +176,6 @@ const AddProduct : React.FC<modalProps> = ({close}) => {
       <Toaster />
     </Theme>
   );
-}
+};
 
-export default AddProduct
+export default AddProduct;

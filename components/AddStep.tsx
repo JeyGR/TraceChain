@@ -6,20 +6,32 @@ import React, { useEffect, useState } from 'react'
 import toast, { Toaster } from 'react-hot-toast';
 
 interface componentProp {
-    close:()=>void;
+    close:()=>void,
+    productId : string
 }
 const montserrat = Montserrat({subsets:['latin']});
 
-const AddStep : React.FC<componentProp> = ({close}) => {
+const AddStep : React.FC<componentProp> = ({close, productId}) => {
   const [isCreating, setIsCreating] = useState(false);
   const [isSelectingOption, setSelectingOption] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
   const [currSelect, setCurrSelect] = useState("select");
   const [textTitle, setTextTitle] = useState("");
   const [textDescription, setTextDes] = useState("");
+  const [props, setprops] = useState<{name:string, prop:string}[]>([{name: "Name", prop:"Sample"},
+    {name: "Description", prop:"Description"},
+    {name: "Maximum retail price", prop:"499"},
+    {name: "Contact info", prop:"abc@gmail.com"},
+    {name: "Net weight", prop:"1.2kg"},
+    {name: "Country of origin", prop:"India"},
+    {name: "Age restriction", prop:"Only for 16+"},])
+
+
+  useEffect(()=>{
+    //Call backend with product ID to get details
+  },[])
 
   const handleAddProduct = ()=>{
-    console.log("Add product");
     setIsCreating(true);
     setSelectingOption(true);
   }
@@ -44,18 +56,8 @@ const AddStep : React.FC<componentProp> = ({close}) => {
     setIsCreating(false);
     setTextTitle("");
     setTextDes("");
+    //call blockchain
   }
-
-
-    const props = [
-        {name: "Name", prop:"Sample"},
-        {name: "Description", prop:"Description"},
-        {name: "Maximum retail price", prop:"499"},
-        {name: "Contact info", prop:"abc@gmail.com"},
-        {name: "Net weight", prop:"1.2kg"},
-        {name: "Country of origin", prop:"India"},
-        {name: "Age restriction", prop:"Only for 16+"},
-    ]
 
   return (
     <Theme appearance="dark">
@@ -105,7 +107,7 @@ const AddStep : React.FC<componentProp> = ({close}) => {
                 </Select.Content>
               </Select.Root>
               <Button variant="solid" size="3" onClick={handleSelectedType}>
-                Submit
+                Next
               </Button>
             </Flex>
           )}

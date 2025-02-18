@@ -1,13 +1,21 @@
 "use client";
 import { Cross1Icon } from '@radix-ui/react-icons';
 import { IconButton, Theme } from '@radix-ui/themes';
-import React from 'react'
+import React, { useRef } from 'react'
 
 interface componentProps {
     close : ()=>void
+    handleAddFeedback : (pid:string)=>void;
 }
 
-const AddFeedback:React.FC<componentProps> = ({close}) => {
+const AddFeedback:React.FC<componentProps> = ({close, handleAddFeedback}) => {
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+
+  const handleSubmit = ()=>{
+    const feedbackContent = inputRef.current?.value;
+    handleAddFeedback(feedbackContent || "");
+  }
   return (
     <Theme appearance="light">
       <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
@@ -21,11 +29,12 @@ const AddFeedback:React.FC<componentProps> = ({close}) => {
             type="text"
             placeholder="Add your user feedback"
             className="h-8 w-96 p-3 border border-neutral-300 rounded-lg text-neutral-700 text-start focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            ref={inputRef}
           />
           <div className="w-full flex justify-end pt-4">
             <button
               className="py-2 px-4 rounded-md bg-indigo-500 hover:bg-indigo-600 text-white"
-              onClick={close}
+              onClick={handleSubmit}
             >
               Submit
             </button>

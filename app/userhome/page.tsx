@@ -1,55 +1,48 @@
 "use client";
 import "@radix-ui/themes/styles.css";
-import { Montserrat } from "next/font/google";
-import { EnterFullScreenIcon } from "@radix-ui/react-icons";
+import { Montserrat } from 'next/font/google'
+import React, { useEffect, useState } from 'react'
+import {EnterFullScreenIcon,} from '@radix-ui/react-icons';
+import { useRouter } from "next/navigation";
+import ProductScanner from "@/components/ProductScanner";
+
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 const page = () => {
+  const router = useRouter();
+  const [isScannModalOpen, setIsScanModalOpen] = useState<boolean>(false);
+
+  useEffect(()=>{
+    if( !localStorage.getItem("token")){
+        router.replace("/");
+    }
+  },[])
   const productDetails = [
     {
-      Name: "Product name",
+      Name: "Scan a product",
       Value:
-        "Sample name kjn jih uhiuhuhu  uh9uhfd oihdsf oiihf iuhjsdf ijohdfjn",
+        "Click the scan product button to open the scanner and scan the QR code in the scanner.",
     },
     {
-      Name: "Product description",
-      Value: "Sample description",
+      Name: "Check for product information",
+      Value: "Product information will the added by the authorities. You can check them before purchase.",
     },
     {
-      Name: "Maximum retail price",
-      Value: "499",
+      Name: "Check for product process",
+      Value: "Pivotal process which are monitored by authorities are available here.",
     },
 
     {
-      Name: "Company",
-      Value: "abc pvt ltd",
-    },
-    {
-      Name: "Manufacturing Date",
-      Value: "18/12/2025",
-    },
-    {
-      Name: "Expiry date",
-      Value: "12/12/2026",
-    },
-    {
-      Name: "Contact info",
-      Value: "abc@gmail.com",
-    },
-    {
-      Name: "Net weight",
-      Value: "45kg",
-    },
-    {
-      Name: "Country of origin",
-      Value: "India",
-    },
-    {
-      Name: "Age restriction",
-      Value: "Only for 16+",
+      Name: "Add or view feedaback",
+      Value: "You can see the feedbacks of the product and also can add some by your own.",
     },
   ];
+
+  const handleScan = async(pid : string)=>{
+    router.push(`/user/${pid}`);
+    setIsScanModalOpen(false);
+  }
 
   return (
     <div
@@ -71,12 +64,29 @@ const page = () => {
       </div>
       <div className="md:w-3/4 w-full min-h-screen flex flex-col p-5 items-center justify-center">
         <div className=" p-5 rounded-lg flex flex-col gap-5 items-center">
-          <button className="px-6 py-2 bg-indigo-600 rounded text-xl font-semibold flex items-center gap-3 hover:bg-indigo-800">
+          <button
+            className="px-6 py-2 bg-indigo-600 rounded text-xl font-semibold flex items-center gap-3 hover:bg-indigo-800"
+            onClick={() => setIsScanModalOpen(true)}
+          >
             <EnterFullScreenIcon className="w-6 h-6" />
             Scan a product
           </button>
         </div>
       </div>
+      {isScannModalOpen && (
+        <div>
+          <div
+            onClick={() => setIsScanModalOpen(false)}
+            className="absolute top-0 left-0 z-[99999] h-screen w-full bg-black opacity-80  text-black"
+          ></div>
+          <div className="absolute top-1/2 w-full md:w-fit left-1/2 -translate-x-1/2 -translate-y-1/2  z-[99999999]">
+            <ProductScanner
+              setIsQrScannerOpen={() => setIsScanModalOpen(false)}
+              handleScanned={handleScan}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

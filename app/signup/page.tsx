@@ -12,6 +12,9 @@ import {
   IconButton,
 } from "@radix-ui/themes";
 import { EyeOpenIcon, EyeClosedIcon } from "@radix-ui/react-icons";
+import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -19,16 +22,45 @@ const SignInForm = () => {
   const [showpassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
-  const [name, setName] = useState<string>();
-  const [email, setEmail] = useState<string>();
-  const [password, setPassword] = useState<string>();
-  const [confirmPass, setConfirmPass] = useState<string>();
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPass, setConfirmPass] = useState<string>("");
   const [isSubitting, setIsSubmitting] = useState<boolean>(false);
+  const router = useRouter();
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-
-    // setIsSubmitting(false);
+    if(name===""  || email===""  || password===""){
+      toast.error("Must fill all fields");
+      setIsSubmitting(false);
+      return;
+    }
+    if(confirmPass!=password){
+      toast.error("Paswords doesn't match");
+      setIsSubmitting(false);
+      return;
+    }
+    const toastId = toast.loading("Signing up...");
+    try {
+      const response = await axios.post("/api/signup", {name, email, password});
+      if(response.data.msg==="success"){
+         const offToken = response.data.Offtoken;
+         localStorage.setItem("offToken", offToken);
+         localStorage.removeItem("token");
+         toast.success("Signup success", {id:toastId});
+        router.push("/home");
+      }
+      else{
+        toast.error(response.data.msg, {id:toastId});
+        return;
+      }
+    } catch (error) {
+      toast.error("Something went wrong", {id:toastId});
+    }
+    finally{
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -121,7 +153,7 @@ const SignInForm = () => {
               >
                 SignUp
               </Button>
-              <div className="w-full flex justify-center cursor-pointer">
+              <div className="w-full flex justify-center cursor-pointer" onClick={()=>router.push("/signin")}>
                 <Text
                   color="blue"
                   className={`${montserrat.className} text-sm `}
@@ -133,6 +165,7 @@ const SignInForm = () => {
           </div>
         </div>
       </div>
+      <Toaster/>
     </Theme>
   );
 };

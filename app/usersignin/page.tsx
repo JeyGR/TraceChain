@@ -5,22 +5,53 @@ import "@radix-ui/themes/styles.css";
 import { Button, Flex, Theme, Box, TextField, Text, IconButton } from '@radix-ui/themes';
 import { EyeOpenIcon, EyeClosedIcon } from '@radix-ui/react-icons';
 import { motion } from 'framer-motion';
+import toast, { Toaster } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
 const SignInForm = () => {
   const [showpassword, setShowPassword] = useState<Boolean>(false);
-  const [email, setEmail] = useState<String>();
-  const [password, setPassword] = useState<String>();
+  const [email, setEmail] = useState<String>("");
+  const [password, setPassword] = useState<String>("");
   const [isSubitting, setIsSubmitting] = useState<boolean>(false);
+  const router = useRouter();
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    // Simulate a submission process
-    setTimeout(() => setIsSubmitting(false), 2000);
-  };
+  
+    if (email.trim() === "" || password.trim() === "") {
+      toast.error("Must fill all fields!");
+      setIsSubmitting(false);
+      return;
+    }
+  
+    try {
+      const response =await axios.post("/api/usersignin", {email, password});
 
-  // Animation Variants
+      const msg = response.data.msg;
+      console.log(response);
+      if(msg==="success"){
+        const {token, user} = response.data;
+        localStorage.setItem("token", token);
+  
+        toast.success("Login successful!");
+    
+        router.push("/userhome");
+      }
+      else{
+        toast.error(response.data.msg);
+      }
+    } catch (error) {
+      toast.error(error);
+      console.log("Error from signin",error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  
+
   const containerVariants = {
     hidden: { opacity: 0, y: 50 },
     visible: {
@@ -91,7 +122,7 @@ const SignInForm = () => {
               >
                 SignIn
               </Button>
-              <div className="w-full flex justify-center cursor-pointer">
+              <div className="w-full flex justify-center cursor-pointer" onClick={()=>router.push("/usersignup")}>
                 <Text
                   color="indigo"
                   className={`${montserrat.className} text-sm `}
@@ -103,6 +134,7 @@ const SignInForm = () => {
           </div>
         </motion.div>
       </motion.div>
+      <Toaster/>
     </Theme>
   );
 };

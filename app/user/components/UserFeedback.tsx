@@ -1,105 +1,94 @@
 "use client";
 import "@radix-ui/themes/styles.css";
 import { Montserrat } from "next/font/google";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChatBubbleIcon } from "@radix-ui/react-icons";
 import AddFeedback from "@/components/AddFeedback";
+import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
+import { useParams } from "next/navigation";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
+
 const UserFeedback = () => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [feedback, setFeedback] = useState<{user:string, date:string, time:string, content:string}[]>([])
+  const[pid, setPid] = useState<any>("");
+  const params = useParams();
+  
+  useEffect(()=>{
+    setPid(params?.unique_id);
+    const handleFetchFeedback = async()=>{
+      try {
+        const pid = params?.unique_id;
+        console.log(pid);
+        const response = await axios.post("/api/getproductfeedback",{pid:pid});
+        const tempFeedback :{user:any, date:any,time:any,content:any}[] = [];
+        if(response.data.msg=="success"){
+          response.data.feedbacks.map((item:any)=>{
+            var date = item.createdAt.split('T')[0];
+            date = date.split('-');  
+            date.reverse(); 
+            const formatedDate = date.join('/');
+            const time = item.createdAt.split('T')[1];
+            const formatedTime = convertTimeFormat(time);
+            tempFeedback.push({user:item.user.charAt(0).toUpperCase()+ item.user.slice(1), date:formatedDate, time:formatedTime,content:item.content});
+          });
+          setFeedback(tempFeedback);
+        }
+        else{
+          toast.error(response.data.msg);
+        }
+      } catch (error) {
+        console.log("Error from getting feedback : ", error);
+        toast.error("Unexpected error occured");
+      }
+    }
+    handleFetchFeedback();
+  },[])
+
+  const convertTimeFormat = (time: string) => {
+    // const utcDate = new Date(time);
+    // const istOffset = 5.5 * 60 * 60 * 1000; 
+    // const istDate = new Date(utcDate.getTime() + istOffset);
+    // const hours = istDate.getHours().toString().padStart(2, '0');
+    // const minutes = istDate.getMinutes().toString().padStart(2, '0');
+    // const seconds = istDate.getSeconds().toString().padStart(2, '0');
+    // const milliseconds = istDate.getMilliseconds().toString().padStart(3, '0');
+    // const formattedISTTime = `${hours}:${minutes}:${seconds}.${milliseconds}`;
+    return time.split('.')[0];
+    //Need to convert to IST time;
+  }
+  
 
   const handleModalClose = () => {
     setIsFeedbackOpen(false);
   };
 
-  const feedbacks = [
-    {
-      Name: "Dhanush",
-      Date: "12/10/2025",
-      Time: "4:10",
-      Content:
-        "I recently purchased the Samsung Galaxy S23 Ultra, and I’m really impressed by the design and build quality. The 6.8-inch Dynamic AMOLED 2X display is stunning with vibrant colors and deep blacks, making media consumption a joy. Whether I'm watching movies or browsing, the screen delivers a premium experience every time.",
-    },
-    {
-      Name: "Priya",
-      Date: "15/10/2025",
-      Time: "2:30",
-      Content:
-        "The Samsung Galaxy S23 Ultra has been an absolute powerhouse. The performance, thanks to the Snapdragon 8 Gen 2 chipset, is flawless. Whether I’m multitasking or playing graphic-heavy games, it never lags or stutters. The phone feels incredibly smooth, and I’ve never had an issue with responsiveness.",
-    },
-    {
-      Name: "Ravi",
-      Date: "20/10/2025",
-      Time: "10:15",
-      Content:
-        "The camera on the Samsung Galaxy S23 Ultra is beyond impressive. The 200MP main sensor captures incredible detail, and even low-light photos come out crisp and clear. The ultra-wide lens provides fantastic versatility, and the 8K video quality is exceptional, making it perfect for creators and videographers.",
-    },
-    {
-      Name: "Aishwarya",
-      Date: "22/10/2025",
-      Time: "5:00",
-      Content:
-        "I recently got the Samsung Galaxy S23 Ultra, and it’s been a great experience. The screen is incredibly bright and sharp, with vivid colors. Watching movies or playing games on it feels immersive. The size might be a bit large for some, but I love it for productivity tasks like reading or editing photos.",
-    },
-    {
-      Name: "Vikram",
-      Date: "25/10/2025",
-      Time: "7:45",
-      Content:
-        "After using the Samsung Galaxy S23 Ultra for a week, I can confidently say that the camera system is its strongest feature. The 200MP sensor captures stunningly detailed shots, and the 8K video quality is fantastic. The low-light performance is exceptional, and it rivals other flagship phones on the market.",
-    },
-    {
-      Name: "Meera",
-      Date: "30/10/2025",
-      Time: "12:10",
-      Content:
-        "The Samsung Galaxy S23 Ultra is an incredible phone. The performance is fast, and I haven’t experienced any lag or slowdown, even when running heavy apps or multitasking. The display is large, bright, and offers excellent color accuracy. I also love the fact that it supports fast charging and has great battery life.",
-    },
-    {
-      Name: "Suresh",
-      Date: "5/11/2025",
-      Time: "3:20",
-      Content:
-        "I’ve been using the Samsung Galaxy S23 Ultra for about a month, and it’s one of the best smartphones I’ve owned. The 6.8-inch display is perfect for watching content and gaming. The design is sleek, and the performance is top-notch. It’s one of the most powerful devices available right now.",
-    },
-    {
-      Name: "Nisha",
-      Date: "7/11/2025",
-      Time: "9:00",
-      Content:
-        "The battery life on the Samsung Galaxy S23 Ultra has been fantastic. I get through a full day of heavy use without needing to recharge, which is a huge plus. The phone also supports fast charging, so I’m never waiting long for a top-up. I’ve been using it for all my work tasks and media consumption, and it’s been great.",
-    },
-    {
-      Name: "Arun",
-      Date: "10/11/2025",
-      Time: "8:30",
-      Content:
-        "The Samsung Galaxy S23 Ultra is perfect for someone who enjoys high-quality content. The 200MP camera is amazing for photography, and the video recording capabilities in 8K are simply unbeatable. I’ve taken some amazing photos and videos during my travels, and they look stunning. The level of detail is unmatched by any other phone camera I’ve used.",
-    },
-    {
-      Name: "Leena",
-      Date: "13/11/2025",
-      Time: "11:15",
-      Content:
-        "I bought the Samsung Galaxy S23 Ultra as an upgrade from my old phone, and it’s been worth every penny. The display is absolutely stunning, and the camera is perfect for anyone who loves photography. Whether it’s day or night, the camera’s performance is top-tier. I’ve never been happier with a smartphone.",
-    },
-    {
-      Name: "Rajesh",
-      Date: "18/11/2025",
-      Time: "4:45",
-      Content:
-        "The Samsung Galaxy S23 Ultra is an absolute beast in terms of performance. The Snapdragon 8 Gen 2 chip ensures that everything runs smoothly, and I’ve had no issues with performance so far. Gaming, media consumption, and multitasking all feel effortless on this device. I can’t imagine going back to a slower phone after using this.",
-    },
-    {
-      Name: "Kavitha",
-      Date: "19/11/2025",
-      Time: "6:30",
-      Content:
-        "The Samsung Galaxy S23 Ultra is my perfect phone for photography and productivity. The camera’s 200MP sensor has captured some amazing shots, and the overall quality is top-tier. The performance is stellar as well, with no slowdowns, and the display is bright and clear, even in direct sunlight. It’s a great all-rounder.",
-    },
-  ];
+  const handleAddFeedback = async(content:string)=>{
+    try {
+      const item = {pid:pid, user:localStorage.getItem("token"), content:content};
+      const response = await axios.post("/api/addfeedback", {item});
+      if(response.data.msg==="success"){
+        toast.success("Feedback added");
+        const newFeedback = response.data.feedback;
+        var date = newFeedback.createdAt.split('T')[0];
+        date = date.split('-');
+        date.reverse();
+        const formatedDate = date.join('/');
+        const formatedName = newFeedback.user.charAt(0).toUpperCase() + newFeedback.user.slice(1);
+        setFeedback(prev=>[...prev,{ user: formatedName, date: formatedDate, time: newFeedback.createdAt.split('T')[1].split('.')[0], content: newFeedback.content }]);
+        console.log(feedback);
+      }
+      else{
+        toast.error(response.data.msg);
+      }
+    } catch (error) {
+      console.log("Error in adding feedback :", error);
+    }
+    setIsFeedbackOpen(false);
+  }
 
   return (
     <div
@@ -110,20 +99,25 @@ const UserFeedback = () => {
           <h1 className="text-xl font-medium text-center">User reviews</h1>
         </div>
         <div className="overflow-y-auto w-full flex-1 space-y-4 px-4 pb-14">
-          {feedbacks.map((item, key) => (
+          {feedback.length==0 && (
+            <div className="text-red-500 font-semibold text-center pt-3">
+              No feedbacks on this product. Click Add to add your feedback
+            </div>
+          )}
+          {feedback.map((item, key) => (
             <div
               className="w-full px-4 py-3 bg-white shadow rounded-lg my-2 space-y-2"
               key={key}
             >
               <div className="flex items-center gap-2 border-b border-gray-300 pb-1">
                 <div className="px-3 bg-blue-100 rounded-md w-fit flex">
-                  <h1 className="text-gray-700 font-medium">{item.Name}</h1>
+                  <h1 className="text-gray-700 font-medium">{item.user}</h1>
                 </div>
                 <h1 className="text-gray-600">
-                  {item.Date} ~ {item.Time}
+                  {item.date} ~ {item.time}
                 </h1>
               </div>
-              <h1 className="text-gray-700">{item.Content}</h1>
+              <h1 className="text-gray-700">{item.content}</h1>
             </div>
           ))}
         </div>
@@ -137,7 +131,8 @@ const UserFeedback = () => {
           Add
         </button>
       </div>
-      {isFeedbackOpen && <AddFeedback close={handleModalClose} />}
+      {isFeedbackOpen && <AddFeedback close={handleModalClose} handleAddFeedback={handleAddFeedback} />}
+      <Toaster/>
     </div>
   );
 };
