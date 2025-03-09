@@ -9,7 +9,6 @@ export default async function handler (req,res){
     }
     try {
         const {name, email, password} = req.body;
-        console.log(name+","+email+","+password);
     
         await connectDb();
     
@@ -21,7 +20,7 @@ export default async function handler (req,res){
         const officer = new Officer({name:name, email:email, password:hashedPassword});
         await officer.save();
     
-        const Offtoken = generateToken(officer);
+        const Offtoken =  generateToken(officer);
     
         res.status(200).json({msg:"success", offToken: Offtoken})
     } catch (error) {

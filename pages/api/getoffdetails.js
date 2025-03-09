@@ -25,6 +25,6 @@ export default async function hanlder(req,res){
         }
     } catch (error) {
         console.log("error from get offcer details: ", error);
-        res.status(404).json({msg:"Unexpected error occured"});
+        res.json({msg:"Unexpected error occured"});
     }
 }

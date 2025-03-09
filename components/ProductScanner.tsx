@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -51,10 +52,10 @@ const ProductScanner = ({setIsQrScannerOpen, handleScanned} : ProductScannerprop
         handleScanned(scannedResult);
     }
   };
-
   const handleFileUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    console.log("mnvjgfh");
     const file = event.target.files?.[0];
     if (file) {
       try {
@@ -69,6 +70,7 @@ const ProductScanner = ({setIsQrScannerOpen, handleScanned} : ProductScannerprop
 
   return (
     <div className="bg-neutral-700 bg-opacity-40 backdrop-blur px-5 py-5 mx-3 md:px-10 md:py-10 rounded-lg shadow-xl border border-neutral-400 border-opacity-25">
+      
       <h2 className="text-2xl font-bold mb-4">QR Code Scanner</h2>
 
       <video ref={videoRef} className="w-full rounded-lg shadow-md" />
@@ -79,7 +81,6 @@ const ProductScanner = ({setIsQrScannerOpen, handleScanned} : ProductScannerprop
         </label>
         <input
           type="file"
-          accept="image/*"
           onChange={handleFileUpload}
           className="p-2 border border-neutral-300 border-opacity-25 rounded-md shadow-sm w-full cursor-pointer"
         />

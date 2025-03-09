@@ -12,9 +12,9 @@ import axios from 'axios';
 const montserrat = Montserrat({ subsets: ['latin'] });
 
 const SignInForm = () => {
-  const [showpassword, setShowPassword] = useState<Boolean>(false);
-  const [email, setEmail] = useState<String>("");
-  const [password, setPassword] = useState<String>("");
+  const [showpassword, setShowPassword] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [isSubitting, setIsSubmitting] = useState<boolean>(false);
   const router = useRouter();
 
@@ -33,12 +33,12 @@ const SignInForm = () => {
       const msg = response.data.msg;
       console.log(response);
       if(msg==="success"){
-        const {token, user} = response.data;
+        const {token} = response.data;
         localStorage.setItem("token", token);
   
         toast.success("Login successful!");
     
-        router.push("/userhome");
+        router.push("/user");
       }
       else{
         toast.error(response.data.msg);

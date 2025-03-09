@@ -6,8 +6,9 @@ import QrScannerComp from "./components/QrScannerComp";
 export default function UserLayout({ children }: { children: ReactNode }) {
   const [isQrScannerOpen, setIsQrScannerOpen] = useState(false);
 
+
   return (
-    <div className="bg-white h-screen text-black relative">
+    <div className="bg-white h-fit text-black relative">
       <Navbar
         isQrScannerOpen={isQrScannerOpen}
         setIsQrScannerOpen={setIsQrScannerOpen}
