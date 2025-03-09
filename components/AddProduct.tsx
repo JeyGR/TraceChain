@@ -1,14 +1,24 @@
-import { Box, Button, Flex, IconButton, Select, Text, TextField, Theme, ThemePanel } from '@radix-ui/themes';
-import React, { useRef, useState } from 'react'
+"use client";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {  Button, IconButton, Select, TextField, Theme } from '@radix-ui/themes';
+import React, {  useRef, useState } from 'react'
 import { Cross1Icon } from '@radix-ui/react-icons';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from 'axios';
+import { createUniqueId, encryptData, uploadIageToCloudinary } from '@/utils/helper';
+import { useDataStorageStore } from "@/utils/web3Fetch"
+import ImageUpload from './ImageUpload';
+import { Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface modalProps {
   close: () => void;
+  setAllProductData: (data: any) => void;
+  allProductData: any;
 }
 
-const AddProduct: React.FC<modalProps> = ({ close }) => {
+const AddProduct: React.FC<modalProps> = ({ close, setAllProductData, allProductData }) => {
   const [isOpen, setIsOpen] = useState(false);
   const titleRef = useRef<HTMLInputElement>(null);
   const valueRef = useRef<HTMLInputElement>(null);
@@ -23,6 +33,13 @@ const AddProduct: React.FC<modalProps> = ({ close }) => {
     { title: "Country of origin", placeholder: "eg: India", type: "text", value: "" },
     { title: "Age restriction", placeholder: "eg: only for 16+", type: "text", value: "" }
   ]);
+
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+
+  const {addNewProduct} = useDataStorageStore();
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   
 
   const handleAddProperty = () => {
@@ -41,139 +58,273 @@ const AddProduct: React.FC<modalProps> = ({ close }) => {
     }
   };
 
+  const handleBlockchainPost = async (imageUrl: string) => {
+    try {
+      const newFormData = [
+        ...formData,
+        {
+          title: "Product Image",
+          placeholder: "eg: Upload Product Image",
+          value: imageUrl
+        }
+      ];      
+      const uniqueId = createUniqueId();
+      const dataEncrypt = encryptData(newFormData);
+      const response = await addNewProduct(uniqueId, dataEncrypt);
+
+      if(response) {
+        const newlyAddeddata = [{...newFormData, productId: uniqueId}];
+        setAllProductData([...newlyAddeddata, ...allProductData])
+      }
+      
+     
+       
+      return response;
+    } catch (error) {
+      console.error("Blockchain Error:", error);
+      toast.error("Error adding product to blockchain");
+      return null;
+    }
+  };
+  
   const handleSubmit = async () => {
-    for(var i=0;i<formData.length;i++){
-      if(formData[i].value===""){
-        toast.error(`${formData[i].title} is not filled`);
+    try {
+      for (let i = 0; i < formData.length; i++) {
+        if (formData[i].value === "") {
+          toast.error(`${formData[i].title} is not filled`);
+          return;
+        }
+      }
+
+      if(!imageFile) {
+        toast.error("Please Upload the Image For the product!");
         return;
       }
-    }
-    const toastId = toast.loading("Generating QR...");
+      setIsLoading(true);
 
-    // Send to blockchain and get the ProductId and send it to backend
+      const imageUrl = await uploadIageToCloudinary(imageFile);
+      
 
-    const tempProductId = "123456789";
+      
+  
+      // Send to blockchain and get the ProductId
+      const tempProductId = await handleBlockchainPost(imageUrl);
+  
+      if (!tempProductId) {
+        throw new Error("Product not added to blockchain");
+      }
+  
+      // Generate QR Code only if product was successfully added to blockchain
+      const toastId = toast.loading("Generating QR...");
+      const res = await axios.get(`/api/getqrcode/${tempProductId}`);
+  
+      if (res.data.msg === "success") {
+        const link = document.createElement("a");
+        link.href = res.data.qrCode;
+        link.download = res.data.fileName;
+        link.click();
+        toast.success("QR downloaded", { id: toastId });
+        close();
+      } else {
+        throw new Error(res.data.msg);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Submission Error:", error);
+      toast.error(error);
+    }
+  };
+  const modalVariants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.3, ease: 'easeOut' } },
+    exit: { opacity: 0, scale: 0.95, transition: { duration: 0.2 } }
+  };
 
-    const res = await axios.get(`/api/getqrcode/${tempProductId}`);
-    if(res.data.msg==="success"){
-      const link = document.createElement('a');
-      link.href = res.data.qrCode;
-      link.download =res.data.fileName;
-      link.click();
-      toast.success("QR downloaded", {id:toastId});
-    }
-    else{
-      toast.error(res.data.msg, {id:toastId});
-    }
+  const formItemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0 }
+  };
+
+  const overlayVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 }
   };
 
   return (
     <Theme grayColor="olive" appearance="dark">
-      <div className="fixed inset-0 bg-black bg-opacity-70 w-full flex justify-center z-50 p-6 md:py-32 md:px-32">
-        <div className="relative w-full h-full bg-neutral-700 bg-opacity-75 rounded-lg border-2 border-neutral-400 border-opacity-25 p-5 backdrop-blur-md flex flex-col gap-3 md:gap-8">
-          <div className="w-full text-center">
-            <h1 className="text-2xl font-medium">Add a new product</h1>
-          </div>
-          <div className="flex flex-col flex-1 overflow-auto">
-            <div className="md:px-5 w-full flex flex-col md:grid md:grid-cols-2 gap-4">
-              {formData.map((item, key) => (
-                <div className="w-full max-h-fit" key={key}>
-                  <h1 className="font-medium text-base text-neutral-300">{item.title}</h1>
-                  <Box minWidth="10rem" className="min-w-full">
+      <AnimatePresence>
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          variants={overlayVariants}
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+        >
+          <motion.div
+            variants={modalVariants}
+            className="relative w-full max-w-4xl bg-gradient-to-br from-gray-800/90 to-gray-900/90 rounded-xl border border-white/10 shadow-2xl p-6 backdrop-blur-lg"
+          >
+            <div className="absolute top-4 right-4">
+              <IconButton 
+                variant="soft" 
+                size="2" 
+                onClick={close}
+                className="hover:bg-white/10 rounded-full"
+              >
+                <Cross1Icon className="w-4 h-4" />
+              </IconButton>
+            </div>
+
+            <motion.h1 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent"
+            >
+              Add New Product
+            </motion.h1>
+
+            <div className="flex flex-col gap-8">
+              <motion.div
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                className="flex justify-center"
+              >
+                <ImageUpload setImageFile={setImageFile} />
+              </motion.div>
+
+              <motion.div 
+                className="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[60vh] overflow-y-auto scrollbar-hide p-2"
+                variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
+              >
+                {formData.map((item, key) => (
+                  <motion.div
+                    key={key}
+                    variants={formItemVariants}
+                    className="space-y-2 group"
+                  >
+                    <label className="text-sm font-medium text-gray-300">
+                      {item.title}
+                    </label>
                     <TextField.Root
-                      size="2"
+                      size="3"
                       type={item.type}
                       placeholder={item.placeholder}
-                      required={true}
+                      required
                       onChange={(e) => {
                         const updatedFormData = [...formData];
                         updatedFormData[key].value = e.target.value;
-                        setFormData(updatedFormData); 
+                        setFormData(updatedFormData);
                       }}
+                      className="bg-white/5 hover:bg-white/10 focus:ring-2 focus:ring-blue-400/30 transition-all"
                     />
-                  </Box>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="w-full flex flex-col justify-between md:px-5">
-            <div></div>
-            <div className="w-full flex justify-between">
-              <div>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              <div className="flex justify-between gap-4">
                 <Button
-                  variant="solid"
-                  onClick={() => {
-                    setIsOpen(true);
-                  }}
+                  variant="soft"
+                  className="bg-white/5 hover:bg-white/10 px-6 py-3 rounded-lg font-medium transition-all"
+                  onClick={() => setIsOpen(true)}
                 >
-                  Add new property
+                  ＋ Add Property
                 </Button>
-              </div>
-              <div>
-                <Button variant="solid" onClick={handleSubmit}>
-                  Submit
-                </Button>
-              </div>
-            </div>
-          </div>
-          <div className="absolute right-4 top-4" onClick={close}>
-            <IconButton variant="surface">
-              <Cross1Icon />
-            </IconButton>
-          </div>
-          {isOpen && (
-            <div className="fixed inset-0 w-full h-full bg-neutral-800 bg-opacity-55 flex justify-center items-center z-50">
-              <div className="rounded-md flex flex-col gap-4 md:gap-6 bg-neutral-500 border-2 border-neutral-400 border-opacity-30 bg-opacity-35 backdrop-blur-lg p-5 relative md:w-1/3 md:min-h-1/3">
-                <h1 className="font-bold text-xl">Add a property</h1>
-                <div>
-                  <h1 className="font-medium text-neutral-200">Property title</h1>
-                  <TextField.Root placeholder="eg : net weight" size="3" ref={titleRef}>
-                    <TextField.Slot></TextField.Slot>
-                  </TextField.Root>
-                </div>
-                <Select.Root
-                  value={selectedType}
-                  defaultValue="select"
-                  onValueChange={setSelectedType}
+                <Button
                   size="3"
+                  className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 px-8 py-3 rounded-lg font-semibold shadow-lg transition-all"
+                  disabled={isLoading}
+                  onClick={handleSubmit}
                 >
-                  <Select.Trigger />
-                  <Select.Content>
-                    <Select.Item value="select" disabled>
-                      Select field type
-                    </Select.Item>
-                    <Select.Item value="text">Text field</Select.Item>
-                    <Select.Item value="date" disabled>Date</Select.Item>
-                    <Select.Item value="color" disabled>color</Select.Item>
-                  </Select.Content>
-                </Select.Root>
-                <div>
-                  <h1 className="font-medium text-neutral-200">Sample value</h1>
-                  <TextField.Root placeholder="eg : 1.2kg" size="3" ref={valueRef}>
-                    <TextField.Slot></TextField.Slot>
-                  </TextField.Root>
-                </div>
-                <div className="flex justify-end">
-                  <Button variant="solid" onClick={handleAddProperty}>
-                    Submit
-                  </Button>
-                </div>
-                <div
-                  className="absolute top-2 right-2"
-                  onClick={() => {
-                    setIsOpen(false);
-                  }}
-                >
-                  <IconButton variant="surface">
-                    <Cross1Icon />
-                  </IconButton>
-                </div>
+                  {isLoading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    "Submit Product"
+                  )}
+                </Button>
               </div>
             </div>
-          )}
-        </div>
-      </div>
-      <Toaster />
+
+            <AnimatePresence>
+              {isOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 20 }}
+                  className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+                >
+                  <motion.div
+                    className="bg-gray-800/90 backdrop-blur-lg p-6 rounded-xl border border-white/10 w-full max-w-md"
+                  >
+                    <div className="flex justify-between items-center mb-6">
+                      <h2 className="text-xl font-semibold">Add New Property</h2>
+                      <IconButton
+                        variant="ghost"
+                        onClick={() => setIsOpen(false)}
+                        className="hover:bg-white/10 rounded-full"
+                      >
+                        <Cross1Icon className="w-4 h-4" />
+                      </IconButton>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Property Title</label>
+                        <TextField.Root
+                          placeholder="eg: net weight"
+                          size="3"
+                          ref={titleRef}
+                          className="bg-white/5 focus:ring-2 focus:ring-blue-400/30"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Field Type</label>
+                        <Select.Root
+                          value={selectedType}
+                          onValueChange={setSelectedType}
+                          size="3"
+                        >
+                          <Select.Trigger className="w-full bg-white/5 hover:bg-white/10" />
+                          <Select.Content className="bg-gray-800 border border-white/10">
+                            <Select.Item value="select" disabled>
+                              Select field type
+                            </Select.Item>
+                            <Select.Item value="text">Text</Select.Item>
+                            <Select.Item value="date" disabled>
+                              Date
+                            </Select.Item>
+                            <Select.Item value="color" disabled>
+                              Color
+                            </Select.Item>
+                          </Select.Content>
+                        </Select.Root>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Sample Value</label>
+                        <TextField.Root
+                          placeholder="eg: 1.2kg"
+                          size="3"
+                          ref={valueRef}
+                          className="bg-white/5 focus:ring-2 focus:ring-blue-400/30"
+                        />
+                      </div>
+
+                      <Button
+                        className="w-full bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600"
+                        onClick={handleAddProperty}
+                      >
+                        Add Property
+                      </Button>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        </motion.div>
+      </AnimatePresence>
+      <Toaster position="top-center" />
     </Theme>
   );
 };

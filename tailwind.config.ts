@@ -13,7 +13,11 @@ export default {
         foreground: "var(--foreground)",
         'custom-bronze':"#A18072",
         'custom-bronze-bg':"#EDE0D9",
+
       },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+      }
     },
   },
   plugins: [],

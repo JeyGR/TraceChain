@@ -45,7 +45,7 @@ const SignInForm = () => {
     try {
       const response = await axios.post("/api/signup", {name, email, password});
       if(response.data.msg==="success"){
-         const offToken = response.data.Offtoken;
+         const offToken = response.data.offToken;
          localStorage.setItem("offToken", offToken);
          localStorage.removeItem("token");
          toast.success("Signup success", {id:toastId});
