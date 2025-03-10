@@ -8,7 +8,7 @@ export default function UserLayout({ children }: { children: ReactNode }) {
 
 
   return (
-    <div className="bg-white h-fit text-black relative">
+    <div className="bg-white h-screen text-black relative">
       <Navbar
         isQrScannerOpen={isQrScannerOpen}
         setIsQrScannerOpen={setIsQrScannerOpen}

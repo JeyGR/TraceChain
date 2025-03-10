@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-var */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
@@ -133,7 +134,7 @@ const UserFeedback = () => {
   return (
     <div className={`w-full h-full bg-gray-50 ${montserrat.className}`}>
       <div className="flex flex-col h-full">
-        <div className="bg-indigo-600 text-white p-4 rounded-t-lg">
+        <div className="bg-green-700 text-white p-4 rounded-t-lg">
           <h1 className="text-xl font-medium text-center">User Reviews</h1>
         </div>
         
@@ -151,7 +152,7 @@ const UserFeedback = () => {
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-indigo-600">{item.user}</span>
+                  <span className="font-medium text-green-700">{item.user}</span>
                   <span className="text-sm text-gray-500">
                     {item.date} • {item.time}
                   </span>
@@ -165,7 +166,7 @@ const UserFeedback = () => {
         <div className="p-4 border-t border-gray-200">
           <button
             onClick={handleOpenAddModal}
-            className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg transition-colors"
+            className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-colors"
           >
             <ChatBubbleIcon className="w-5 h-5" />
             Add Review

@@ -12,7 +12,6 @@ export default async function handler(req,res){
             await connectDb();
             const {pid, content, user} = req.body.item;
             const decode = verify(user, process.env.JWT_SECRET);
-            const userEmail= decode.email;
             const userData =await User.findOne({uuid:decode.uuid})
             const feedback = new Feedback({product:pid, content:content, user:userData.name, userEmail:userData.email});
             await feedback.save();

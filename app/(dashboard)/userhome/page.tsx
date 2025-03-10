@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import "@radix-ui/themes/styles.css";
 import { Montserrat } from 'next/font/google'
@@ -9,7 +10,7 @@ import ProductScanner from "@/components/ProductScanner";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
-const page = () => {
+const Page = () => {
   const router = useRouter();
   const [isScannModalOpen, setIsScanModalOpen] = useState<boolean>(false);
 
@@ -91,4 +92,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

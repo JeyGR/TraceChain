@@ -41,8 +41,8 @@ const Navbar = ({
         className="text-2xl font-bold text-gray-800"
       >
         <Link href={"/"} className="cursor-pointer">
-        <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-          FoodChain
+        <span className="text-green-700  text-transparent">
+          TraceChain
         </span>
         </Link>
       </motion.div>

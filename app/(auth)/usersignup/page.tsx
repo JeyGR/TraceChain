@@ -53,7 +53,7 @@ const SignInForm = () => {
       console.log(response.data);
       
       if(response.data.msg==="success"){
-        const { token, user } = response.data;
+        const { token } = response.data;
     
         localStorage.setItem('token', token);
     
@@ -71,6 +71,8 @@ const SignInForm = () => {
       }
   
     } catch (error) {
+      console.log(error);
+      
       toast.error("Unexpected error occured");
     }
     finally{

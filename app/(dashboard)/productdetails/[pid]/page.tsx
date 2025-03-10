@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import "@radix-ui/themes/styles.css";
 import { Montserrat } from "next/font/google";
@@ -8,7 +10,7 @@ import { useParams } from "next/navigation";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
-const page = () => {
+const Page = () => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [pid, setPid] = useState<string | string[] | undefined>("");
   const params = useParams();
@@ -19,7 +21,7 @@ const page = () => {
   const handleFeedBackModal = () => {
     setIsFeedbackOpen(false);
   };
-  const handleFeedbackSubmit =(content:string)=>{
+  const handleFeedbackSubmit =()=>{
     console.log("Nothing");
     
   }
@@ -167,4 +169,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

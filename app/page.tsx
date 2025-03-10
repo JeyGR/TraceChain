@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useEffect } from 'react';
 import Lenis from '@studio-freight/lenis';
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 
 const containerVariants = {
@@ -103,7 +104,7 @@ export default function Home() {
           </motion.div>
           
           <motion.p variants={itemVariants} className="text-xl text-gray-600 mb-8 max-w-2xl leading-relaxed">
-            Immutable tracking from farm to table. Verify food authenticity, safety certifications, 
+            Immutable tracking from factory to table. Verify food authenticity, safety certifications, 
             and supply chain integrity with decentralized transparency.
           </motion.p>
           
@@ -116,6 +117,7 @@ export default function Home() {
               whileTap={{ scale: 0.95 }}
               className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-5 rounded-2xl text-lg font-semibold relative overflow-hidden group"
             >
+              <Link href={"/user"}>
               <span className="relative z-10 flex items-center gap-3">
                 <motion.span
                   animate={{ rotate: [0, 15, -15, 0] }}
@@ -125,6 +127,7 @@ export default function Home() {
                 </motion.span>
                 Scan to Verify Food
               </span>
+              </Link>
               <motion.div 
                 className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100"
                 initial={{ x: '-100%' }}
@@ -203,13 +206,13 @@ export default function Home() {
                 </motion.div>
                 
                 <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-                  Farm Fresh Eggs
+                  Fresh Baked Bread
                 </h3>
                 
                 <div className="space-y-4 text-base text-gray-700 w-full">
                   {[
-                    { icon: '🌱', text: 'Origin: Organic Farms, CA' },
-                    { icon: '📅', text: 'Harvested: 2024-03-15' },
+                    { icon: '🏭', text: 'Origin: Fresh From Bakery' },
+                    { icon: '📅', text: 'Packed: 2025-03-09' },
                     { icon: '✅', text: 'Safety Certified: Grade AA' },
                     { icon: '🔗', text: 'Blockchain Verified' }
                   ].map((item, i) => (
@@ -380,7 +383,7 @@ export default function Home() {
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ type: 'spring', stiffness: 50 }}
             >
-              Supply Chain Journey
+              Food Transparency
             </motion.h2>
             
             <div className="relative max-w-6xl mx-auto cursor-pointer">
@@ -481,28 +484,6 @@ export default function Home() {
               safety certifications, and complete supply chain history.
             </p>
             <div className="flex flex-col md:flex-row justify-center gap-6">
-              <motion.button
-                whileHover={{ 
-                  scale: 1.05,
-                  background: 'linear-gradient(to right, #10b981, #059669)'
-                }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-white text-emerald-900 px-8 py-4 rounded-lg font-semibold relative overflow-hidden"
-              >
-                <span className="relative z-10">Start Scanning Now</span>
-                <motion.div 
-                  className="absolute inset-0 bg-gradient-to-r from-green-400 to-emerald-600 opacity-0"
-                  animate={{ 
-                    opacity: [0, 0.1, 0],
-                    x: ['-100%', '100%']
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity
-                  }}
-                />
-              </motion.button>
-              
               <motion.button
                 whileHover={{ 
                   scale: 1.05,

@@ -41,10 +41,10 @@ const CardSection = ({productData}: {productData:any}) => {
   }
   
   return (
-    <div className="w-full py-20 bg-gradient-to-b from-emerald-50 to-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="w-full py-20">
+      <div className="max-w-7xl mx-auto px-2 sm:px-2 lg:px-0">
         <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+          className="flex flex-wrap gap-3 lg:gap-8 w-full justify-center"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"

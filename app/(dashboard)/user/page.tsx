@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,7 +9,7 @@ import {  attachIdToProductData, decryptAllProductData } from "@/utils/helper";
 
 
 
-export const User = () => {
+const User = () => {
 
   const { getAllProductData, initializeWeb3 } = useDataStorageStore();
 
@@ -32,20 +33,49 @@ export const User = () => {
     fetchData();
   }, []);
 
+  const productDetails = [
+    {
+      Name: "Scan a product",
+      Value:
+        "Click the scan product button to open the scanner and scan the QR code in the scanner.",
+    },
+    {
+      Name: "Check for product information",
+      Value: "Product information will the added by the authorities. You can check them before purchase.",
+    },
+    {
+      Name: "Check for product process",
+      Value: "Pivotal process which are monitored by authorities are available here.",
+    },
+
+    {
+      Name: "Add or view feedaback",
+      Value: "You can see the feedbacks of the product and also can add some by your own.",
+    },
+  ];
+
   return (
-    <div className="flex w-full min-h-fit bg-gradient-to-br from-blue-50 via-purple-50 to-blue-50">
+    <div className="flex w-full min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-blue-50">
       {/* Sidebar */}
       <motion.div 
-        initial={{ x: -100 }}
-        animate={{ x: 0 }}
+        initial={{ x: -100, opacity:0 }}
+        animate={{ x: 0, opacity:1 }}
         transition={{ duration: 0.5 }}
-        className="flex-[0.2] bg-white/80 backdrop-blur-lg border-r border-gray-200 p-6 hidden md:block shadow-lg"
+        className="flex-[0.3] bg-white/80 backdrop-blur-lg border-r border-gray-200 p-6 hidden md:block shadow-lg"
       >
         <div className="flex flex-col items-center gap-6">
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Dashboard
+          <h2 className="text-2xl font-bold text-neutral-700">
+            How to use
           </h2>
-          {/* Add sidebar navigation items here */}
+          <div className="w-full flex flex-col gap-1 overflow-auto">
+          <div className="w-full bg-white bg bg-opacity-45 rounded-lg flex flex-col gap-5 px-1 md:px-3 py-2 border-2 border-green-500 border-dashed overflow-auto scrollbar-custom">
+            {productDetails.map((item, key) => (
+              <h1 className="font-bold text-neutral-700" key={key}>
+                {item.Name} - <span className="font-medium">{item.Value}</span>
+              </h1>
+            ))}
+          </div>
+        </div>
         </div>
       </motion.div>
 
@@ -54,7 +84,7 @@ export const User = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="flex-1 p-6"
+        className="flex-1 p-2"
       >
         {/* Search Bar */}
         <div className="w-full flex justify-end mb-8">
@@ -108,12 +138,12 @@ export const User = () => {
                     }}
                     className="relative w-20 h-20"
                   >
-                    <div className="absolute inset-0 border-4 border-emerald-200 rounded-full"></div>
+                    <div className="absolute inset-0 border-4  rounded-full"></div>
                     <motion.div
                       className="absolute inset-0 border-4 border-transparent rounded-full"
                       style={{
-                        borderTopColor: "#4f46e5",
-                        borderRightColor: "#4f46e5"
+                        borderTopColor: "#15803d",
+                        borderRightColor: "#15803d"
                       }}
                       animate={{ rotate: 360 }}
                       transition={{
