@@ -38,11 +38,13 @@ export const useDataStorageStore = create<DataStorageStore>((set, get) => ({
       const web3 = new Web3("http://127.0.0.1:7545");
 
       const productContract = new web3.eth.Contract(
-        DataStorageABI.abi, "0x42dB7f6F62a06bDBA223b0FdA488Fa0E900480E4",
+        DataStorageABI.abi, "0x5bAb7b1D78C598cad7D2580cB1cDC721c44e50a2",
       );
+      
       const processContract = new web3.eth.Contract(
-        ProcessDataABI.abi, "0xA911476DF1A83fD263D1dBA9ACb14884be7aDda6",
-      )
+        ProcessDataABI.abi, "0x92Ed1c693a24CCc8065F9D101dbb6a4Fc19d0261",
+      );
+
       const accounts = await web3.eth.getAccounts();
       set({ web3, productContract, processContract, isLoading: false, account:accounts[2] });
       console.log("Web3 initialized successfully");
