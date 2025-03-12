@@ -103,18 +103,11 @@ const AddProduct: React.FC<modalProps> = ({ close, setAllProductData, allProduct
       setIsLoading(true);
 
       const imageUrl = await uploadIageToCloudinary(imageFile);
-      
-
-      
-  
-      // Send to blockchain and get the ProductId
       const tempProductId = await handleBlockchainPost(imageUrl);
   
       if (!tempProductId) {
         throw new Error("Product not added to blockchain");
       }
-  
-      // Generate QR Code only if product was successfully added to blockchain
       const toastId = toast.loading("Generating QR...");
       const res = await axios.get(`/api/getqrcode/${tempProductId}`);
   
@@ -162,7 +155,7 @@ const AddProduct: React.FC<modalProps> = ({ close, setAllProductData, allProduct
         >
           <motion.div
             variants={modalVariants}
-            className="relative w-full max-w-4xl bg-gradient-to-br from-gray-800/90 to-gray-900/90 rounded-xl border border-white/10 shadow-2xl p-6 backdrop-blur-lg"
+            className="relative w-full max-w-4xl bg-slate-800 bg-opacity-100 rounded-xl border border-white/10 shadow-2xl p-6 backdrop-blur-lg h-4/5 overflow-y-scroll hide-scrollbar"
           >
             <div className="absolute top-4 right-4">
               <IconButton 
@@ -193,7 +186,7 @@ const AddProduct: React.FC<modalProps> = ({ close, setAllProductData, allProduct
               </motion.div>
 
               <motion.div 
-                className="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[60vh] overflow-y-auto scrollbar-hide p-2"
+                className="grid grid-cols-1 md:grid-cols-2 gap-6 p-2"
                 variants={{ visible: { transition: { staggerChildren: 0.05 } } }}
               >
                 {formData.map((item, key) => (
@@ -250,10 +243,10 @@ const AddProduct: React.FC<modalProps> = ({ close, setAllProductData, allProduct
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 20 }}
-                  className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+                  className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm "
                 >
                   <motion.div
-                    className="bg-gray-800/90 backdrop-blur-lg p-6 rounded-xl border border-white/10 w-full max-w-md"
+                    className="bg-gray-800/90 backdrop-blur-lg p-6 rounded-xl border border-white/10 w-full max-w-md "
                   >
                     <div className="flex justify-between items-center mb-6">
                       <h2 className="text-xl font-semibold">Add New Property</h2>
@@ -277,14 +270,12 @@ const AddProduct: React.FC<modalProps> = ({ close, setAllProductData, allProduct
                         />
                       </div>
 
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Field Type</label>
                         <Select.Root
                           value={selectedType}
                           onValueChange={setSelectedType}
                           size="3"
                         >
-                          <Select.Trigger className="w-full bg-white/5 hover:bg-white/10" />
+                          <Select.Trigger className="!w-full bg-white/5 hover:bg-white/10" />
                           <Select.Content className="bg-gray-800 border border-white/10">
                             <Select.Item value="select" disabled>
                               Select field type
@@ -298,7 +289,6 @@ const AddProduct: React.FC<modalProps> = ({ close, setAllProductData, allProduct
                             </Select.Item>
                           </Select.Content>
                         </Select.Root>
-                      </div>
 
                       <div className="space-y-2">
                         <label className="text-sm font-medium">Sample Value</label>
@@ -324,7 +314,6 @@ const AddProduct: React.FC<modalProps> = ({ close, setAllProductData, allProduct
           </motion.div>
         </motion.div>
       </AnimatePresence>
-      <Toaster position="top-center" />
     </Theme>
   );
 };

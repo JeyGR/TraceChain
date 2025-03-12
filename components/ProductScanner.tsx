@@ -5,6 +5,7 @@
 import { useEffect, useRef, useState } from "react";
 import QrScanner from "qr-scanner";
 import toast, { Toaster } from "react-hot-toast";
+import { SquareX } from "lucide-react";
 
 
 interface ProductScannerprops {
@@ -70,9 +71,14 @@ const ProductScanner = ({setIsQrScannerOpen, handleScanned} : ProductScannerprop
   };
 
   return (
-    <div className="bg-neutral-700 bg-opacity-40 backdrop-blur px-5 py-5 mx-3 md:px-10 md:py-10 rounded-lg shadow-xl border border-neutral-400 border-opacity-25">
-      
+    <div className="bg-neutral-700 bg-opacity-55 backdrop-blur-3xl px-5 py-5 mx-3 md:px-10 md:py-10 rounded-lg shadow-xl border border-neutral-400 border-opacity-25">
+      <div className="w-full flex justify-between items-center">
       <h2 className="text-2xl font-bold mb-4">QR Code Scanner</h2>
+      <div className="cursor-pointer" onClick={setIsQrScannerOpen}>
+        <SquareX size={30} color="red" />
+      </div>
+      </div>
+      
 
       <video ref={videoRef} className="w-full rounded-lg shadow-md" />
 

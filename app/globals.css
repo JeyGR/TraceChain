@@ -24,30 +24,40 @@ body {
 }
 
 @layer utilities {
-  /* Hide scrollbar for Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
       display: none;
   }
- /* Hide scrollbar for IE, Edge and Firefox */
   .no-scrollbar {
-      -ms-overflow-style: none;  /* IE and Edge */
-      scrollbar-width: none;  /* Firefox */
+      -ms-overflow-style: none;
+      scrollbar-width: none;
 }
 }
 
 .scrollbar-custom::-webkit-scrollbar {
-  width: 8px; /* Width of the scrollbar */
+  width: 8px;
 }
 
 .scrollbar-custom::-webkit-scrollbar-track {
-  background-color: #f0f0f0; /* Track color */
+  background-color: #f0f0f0;
 }
 
 .scrollbar-custom::-webkit-scrollbar-thumb {
-  background-color: #acb2ff; /* Thumb color */
-  border-radius: 4px; /* Thumb border radius */
+  background-color: #acb2ff;
+  border-radius: 4px;
 }
 
 .scrollbar-custom::-webkit-scrollbar-thumb:hover {
-  background-color: #99a0ff; /* Thumb hover color */
+  background-color: #99a0ff;
+}
+.hide-scrollbar {
+  overflow: scroll;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none; 
 }

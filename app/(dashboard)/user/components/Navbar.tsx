@@ -38,12 +38,12 @@ const Navbar = ({
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        className="text-2xl font-bold text-gray-800"
+        className="text-2xl font-bold"
       >
         <Link href={"/"} className="cursor-pointer">
-        <span className="text-green-700  text-transparent">
+        <h2 className="text-green-700 ">
           TraceChain
-        </span>
+        </h2>
         </Link>
       </motion.div>
 

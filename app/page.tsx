@@ -108,6 +108,7 @@ export default function Home() {
             and supply chain integrity with decentralized transparency.
           </motion.p>
           
+            <Link href={"/user"}>
           <motion.div variants={itemVariants} className="relative inline-block">
             <motion.button
               whileHover={{ 
@@ -117,7 +118,6 @@ export default function Home() {
               whileTap={{ scale: 0.95 }}
               className="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-5 rounded-2xl text-lg font-semibold relative overflow-hidden group"
             >
-              <Link href={"/user"}>
               <span className="relative z-10 flex items-center gap-3">
                 <motion.span
                   animate={{ rotate: [0, 15, -15, 0] }}
@@ -127,15 +127,15 @@ export default function Home() {
                 </motion.span>
                 Scan to Verify Food
               </span>
-              </Link>
               <motion.div 
                 className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100"
                 initial={{ x: '-100%' }}
                 whileHover={{ x: '100%' }}
                 transition={{ duration: 0.6 }}
-              />
+                />
             </motion.button>
           </motion.div>
+          </Link>
         </motion.div>
 
         <motion.div 

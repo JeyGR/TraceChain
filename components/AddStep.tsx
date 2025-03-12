@@ -91,7 +91,6 @@ const AddStep : React.FC<componentProp> = ({close, productId}) => {
             { name: "Name", prop: actualData[0]?.value || "N/A" },
             { name: "Description", prop: actualData[1]?.value || "N/A" },
             { name: "Maximum retail price (₹)", prop: actualData[2]?.value || "N/A" },
-            // { name: "Company", prop: actualData[3]?.value || "N/A" },
             { name: "Contact info", prop: actualData[4]?.value || "N/A" },
             { name: "Net weight", prop: actualData[5]?.value || "N/A" },
             { name: "Country of origin", prop: actualData[6]?.value || "N/A" },
@@ -138,10 +137,8 @@ const AddStep : React.FC<componentProp> = ({close, productId}) => {
       toast.error("All fields are to be filled!");
       return;
     }
-    // setIsCreating(false);
     setTextTitle("");
     setTextDes("");
-    //call blockchainx
     if(selectedOption === "image") {
       setLoading(true);
       const uploadedProcessImages =  await allUploadCloudinary(image);

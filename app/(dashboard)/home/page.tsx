@@ -22,13 +22,11 @@ import { ExitIcon } from "@radix-ui/react-icons";
 const montserrat = Montserrat({ subsets: ["latin"] });
 
 const Home = () => {
-
   const handleLogout = () => {
     localStorage.removeItem("offToken");
     toast.success("Logged out successfully");
     router.push("/signin");
   };
-
 
   const { initializeWeb3, getAllProductData } = useDataStorageStore();
 
@@ -111,52 +109,47 @@ const Home = () => {
       fetchData();
     },[])
 
-
-
   const handleAddProductModalClose = () => {
     setIsAddProductModal(false);
   };
 
   const handleAddStepModalTrigger =(qrCode : string)=>{
-    
     setQRCode(qrCode);
     setIsAddStepModalOpen(true);
   }
-
-
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className={`min-h-screen bg-gradient-to-br from-gray-900 via-emerald-900 to-gray-900 flex flex-col md:flex-row ${montserrat.className}`}
+      className={`min-h-screen bg-slate-900 flex flex-col md:flex-row ${montserrat.className}`}
     >
       {/* Sidebar */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="md:w-96 w-full min-h-screen p-6 bg-black/30 backdrop-blur-lg border-r border-white/10 shadow-2xl"
+        className="md:w-96 w-full min-h-screen p-6 bg-slate-800 backdrop-blur-lg border-r border-slate-700/50 shadow-2xl"
       >
-        <motion.h1 variants={itemVariants} className="text-2xl font-bold mb-8 bg-gradient-to-r from-emerald-400 to-green-400 bg-clip-text text-transparent">
-          My Profile
+        <motion.h1 variants={itemVariants} className="text-2xl font-bold mb-8 text-green-400">
+          Trace Chain
         </motion.h1>
 
         <motion.div variants={itemVariants} className="mb-8">
-          <h2 className="text-lg font-semibold mb-4 text-gray-300">Details</h2>
-          <div className="space-y-4 p-4 bg-white/5 rounded-xl border border-white/10">
+          <h2 className="text-lg font-semibold mb-4 text-slate-300">Details</h2>
+          <div className="space-y-4 p-4 bg-slate-700/30 rounded-xl border border-slate-600/50">
             <div className="space-y-2">
-              <p className="text-sm text-gray-400">Name</p>
-              <p className="font-medium text-gray-200">{authorityDetails.name}</p>
+              <p className="text-sm text-slate-400">Name</p>
+              <p className="font-medium text-slate-200">{authorityDetails.name}</p>
             </div>
             <div className="space-y-2">
-              <p className="text-sm text-gray-400">Email</p>
-              <p className="font-medium text-gray-200">{authorityDetails.email}</p>
+              <p className="text-sm text-slate-400">Email</p>
+              <p className="font-medium text-slate-200">{authorityDetails.email}</p>
             </div>
             <div className="space-y-2">
-              <p className="text-sm text-gray-400">Designation</p>
-              <p className="font-medium text-gray-200">{authorityDetails.desig}</p>
+              <p className="text-sm text-slate-400">Designation</p>
+              <p className="font-medium text-slate-200">{authorityDetails.desig}</p>
             </div>
           </div>
             <motion.div variants={itemVariants} className="mt-6">
@@ -165,23 +158,22 @@ const Home = () => {
                 whileHover="hover"
                 whileTap="tap"
                 onClick={handleLogout}
-                className="w-full py-3 px-6 bg-gradient-to-r from-red-600 to-rose-600 rounded-xl flex items-center justify-center gap-3 shadow-lg hover:shadow-red-500/20 transition-all"
+                className="w-full py-3 px-6 bg-slate-700 hover:bg-slate-600 rounded-lg flex items-center justify-center gap-3 shadow-lg transition-colors"
               >
-                <ExitIcon className="w-5 h-5" />
-                <span className="text-sm font-semibold">Log Out</span>
+                <ExitIcon className="w-5 h-5 text-slate-300" />
+                <span className="text-sm font-semibold text-slate-300">Log Out</span>
               </motion.button>
             </motion.div>
         </motion.div>
 
         <motion.div variants={itemVariants}>
-          <h2 className="text-lg font-semibold mb-4 text-gray-300">Recently Added</h2>
+          <h2 className="text-lg font-semibold mb-4 text-slate-300">Recently Added</h2>
           <div className="space-y-4">
-          {products.length === 0 ? (
+          {products.length > 0 ? (
             <div className="relative space-y-4 h-[50vh] overflow-y-auto">
-              {/* Scrollable content with hidden scrollbar */}
               <div className="pr-4 space-y-4 scrollbar-hide 
                 [-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]
-                hover:scrollbar-thin scrollbar-track-transparent scrollbar-thumb-emerald-500/20
+                hover:scrollbar-thin scrollbar-track-transparent scrollbar-thumb-slate-600
                 transition-all duration-300">
                 {allProductData?.map((data: any, index:number) => {
                   if(Object.keys(data).length >=9) {
@@ -208,19 +200,17 @@ const Home = () => {
                         productName={data[0]?.value}
                         email={data[4]?.value}
                         country={data[6]?.value}
-                        className=""
+                        className="bg-slate-700/30 hover:bg-slate-700/50 border border-slate-600/50"
                       />
                     </motion.div>
                   )
                   }
                 })}
               </div>
-              
-              {/* Gradient overlay */}
-              <div className="sticky bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-gray-900/80 to-transparent pointer-events-none"></div>
+              <div className="sticky bottom-0 left-0 right-0 h-8 pointer-events-none"></div>
             </div>
           ) : (
-            <div>{/* product catalog */}</div>
+            <div className="text-slate-400">No products found!</div>
           )}
           </div>
         </motion.div>
@@ -237,22 +227,22 @@ const Home = () => {
             variants={buttonVariants}
             whileHover="hover"
             whileTap="tap"
-            className="w-full py-4 px-6 bg-gradient-to-r from-emerald-600 to-green-600 rounded-2xl flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-shadow"
+            className="w-full py-4 px-6 bg-green-600 hover:bg-green-500 rounded-2xl flex items-center justify-center gap-3 shadow-lg transition-colors"
             onClick={() => setIsAddProductModal(true)}
           >
-            <PlusIcon className="w-6 h-6" />
-            <span className="text-lg font-semibold">Add New Product</span>
+            <PlusIcon className="w-6 h-6 text-slate-100" />
+            <span className="text-lg font-semibold text-slate-100">Add New Product</span>
           </motion.button>
 
           <motion.button
             variants={buttonVariants}
             whileHover="hover"
             whileTap="tap"
-            className="w-full py-4 px-6 bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-shadow"
+            className="w-full py-4 px-6 bg-slate-700 hover:bg-slate-600 rounded-2xl flex items-center justify-center gap-3 shadow-lg transition-colors"
             onClick={() => setIsScannerModal(true)}
           >
-            <EnterFullScreenIcon className="w-6 h-6" />
-            <span className="text-lg font-semibold">Scan Product</span>
+            <EnterFullScreenIcon className="w-6 h-6 text-slate-300" />
+            <span className="text-lg font-semibold text-slate-300">Scan Product</span>
           </motion.button>
         </div>
       </motion.div>
@@ -276,7 +266,7 @@ const Home = () => {
               exit={{ scale: 0.8 }}
               className="absolute inset-0 flex items-center justify-center p-4"
             >
-              <div className="relative w-full max-w-2xl bg-black/80 rounded-2xl border border-white/10 p-6 shadow-2xl">
+              <div className="relative w-full max-w-2xl p-6">
                 <ProductScanner
                   setIsQrScannerOpen={() => setIsScannerModal(false)}
                   handleScanned={handleAddStepModalTrigger}
@@ -291,7 +281,13 @@ const Home = () => {
         )}
       </AnimatePresence>
 
-      <Toaster position="top-right" />
+      <Toaster position="top-right" toastOptions={{
+        style: {
+          background: '#1e293b',
+          color: '#f8fafc',
+          border: '1px solid #334155'
+        }
+      }} />
     </motion.div>
   );
 };

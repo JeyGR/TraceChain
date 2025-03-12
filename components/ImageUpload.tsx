@@ -47,7 +47,7 @@ const ImageUpload = ({ setImageFile }: { setImageFile: (value: File | null) => v
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-6 py-3 bg-gradient-to-r from-green-500/80 to-blue-500/80 hover:from-green-600/80 hover:to-blue-600/80 text-white rounded-lg font-medium transition-all duration-300"
+                className="px-6 py-3 bg-indigo-500 text-white rounded-lg font-medium transition-all duration-300"
               >
                 Upload Image
               </motion.div>
